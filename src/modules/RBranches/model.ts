@@ -293,7 +293,7 @@ RBranch.init(
   },
   {
     sequelize,
-    tableName: "restaurants",
+    tableName: "r_branches",
     freezeTableName: true,
     timestamps: true,
     paranoid: true,

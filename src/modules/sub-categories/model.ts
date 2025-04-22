@@ -163,7 +163,7 @@ SubCategory.init(
   },
   {
     sequelize,
-    tableName: "sub_category",
+    tableName: "sub_categories",
     freezeTableName: true,
     timestamps: true,
     paranoid: true,

@@ -6,7 +6,7 @@ import {
 } from "graphql";
 import { GraphQLDate } from "../../utils/typeDefs";
 
-export const CategoryType = new GraphQLObjectType({
+export const SubCategoryType = new GraphQLObjectType({
   name: "SubCategory",
   fields: () => ({
     id: { type: GraphQLInt },

@@ -4,7 +4,7 @@ import { ThrowError } from "../../utils/ThrowError";
 import { getUsers } from "./services";
 import { UsersResponse, UserType } from "./typeDefs";
 
-export const list = {
+export const usersList = {
   type: UsersResponse,
   resolve: Authenticate(async () => {
     try {

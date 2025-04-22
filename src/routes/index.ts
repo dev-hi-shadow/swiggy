@@ -3,6 +3,8 @@ import Role from "../modules/roles";
 import User from "../modules/users";
 import Restaurants from "../modules/restaurants";
 import RBranch from "../modules/RBranches";
+import Category from "../modules/categories";
+import SubCategory from "../modules/sub-categories";
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -11,6 +13,8 @@ const RootQuery = new GraphQLObjectType({
     ...User.Query,
     ...Restaurants.Query,
     ...RBranch.Query,
+    ...Category.Query,
+    ...SubCategory.Query,
     
   }),
 });
@@ -21,8 +25,9 @@ const RootMutation = new GraphQLObjectType({
     ...Role.Mutation,
     ...User.Mutation,
     ...Restaurants.Mutation,
+    ...Category.Mutation,
+    ...SubCategory.Mutation,
     ...RBranch.Mutation,
-
   }),
 });
 

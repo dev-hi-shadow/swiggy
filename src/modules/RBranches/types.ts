@@ -1,3 +1,5 @@
+import { IRestaurant } from "../restaurants/types";
+
 export interface IRBranch {
   id: number;
   restaurant_id: number;
@@ -44,4 +46,5 @@ export interface IRBranch {
   created_by?: number | null;
   updated_by?: number | null;
   deleted_by?: number | null;
+  restaurant?: IRestaurant;
 }

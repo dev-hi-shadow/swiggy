@@ -152,7 +152,7 @@ Category.init(
   },
   {
     sequelize,
-    tableName: "category",
+    tableName: "categories",
     freezeTableName: true,
     timestamps: true,
     paranoid: true,
