@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import { Category } from "../../models";
 import { ThrowError } from "../../utils/ThrowError";
-import { IUser } from "../users/types";
+import { IUser } from "../Users/types";
 import { ICategory } from "./types";
 
 export const GetCategories = async (id?: number) => {

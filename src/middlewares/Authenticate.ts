@@ -2,9 +2,9 @@ import { GraphQLError, GraphQLFieldResolver } from "graphql";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
 import { Context } from "../types";
-import { IUser } from "../modules/users/types";
-import { IRole } from "../modules/roles/types";
-import { getUsers } from "../modules/users/services";
+import { IUser } from "../modules/Users/types";
+import { IRole } from "../modules/Roles/types";
+import { getUsers } from "../modules/Users/services";
 
 type Action = "read" | "write" | "delete" | "update";
 

@@ -3,10 +3,7 @@ import { IRBDeals } from "./types";
 import { RBDeals, Deals, RBranch, Restaurants } from "../../models";
 import { ThrowError } from "../../utils/ThrowError";
 
-export const CreateRBDeal = async (
-  payload: IRBDeals,
-  transaction: Transaction
-) => {
+export const CreateRBDeal = async (payload: IRBDeals, transaction: Transaction) => {
   return await RBDeals.create(payload, { transaction });
 };
 export const DeleteRBDeal = async (id: number, transaction: Transaction) => {

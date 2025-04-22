@@ -1,6 +1,5 @@
-import { IUser } from "../users/types";
+import { IUser } from "../Users/types";
 import { RBranch, Restaurants } from "../../models";
-import { Op } from "sequelize";
 import { IRBranch } from "./types";
 
 export const GetRBranches = async (user: IUser) => {
@@ -16,30 +15,30 @@ export const GetBranchById = async (
   id: number,
   type?: "branch" | "restaurant"
 ) => {
-   if (type === "branch") {
-     return await RBranch.findByPk(id, {
-       include: [
-         {
-           model: Restaurants,
-           as: "restaurant",
-           attributes: ["id", "name"],
-         },
-       ],
-     });
-   } else {
-     return await RBranch.findAndCountAll({
-       where: {
-         restaurant_id: id,
-       },
-       include: [
-         {
-           model: Restaurants,
-           as: "restaurant",
-           attributes: ["id", "name"],
-         },
-       ],
-     });
-   }
+  if (type === "branch") {
+    return await RBranch.findByPk(id, {
+      include: [
+        {
+          model: Restaurants,
+          as: "restaurant",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+  } else {
+    return await RBranch.findAndCountAll({
+      where: {
+        restaurant_id: id,
+      },
+      include: [
+        {
+          model: Restaurants,
+          as: "restaurant",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+  }
 };
 
 export const CreateOrUpdaterBranch = async (payload: IRBranch, user: IUser) => {

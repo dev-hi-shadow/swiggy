@@ -4,7 +4,7 @@ import { Context } from "../../types";
 import { formatResponse, getArguments } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
-import { ICategory } from "../categories/types";
+import { ICategory } from "../Categories/types";
 import { CreateOrUpdateSubcategory, DeleteSubcategory } from "./services";
 import { SubCategoryType } from "./typeDefs";
 import { ISubcategory } from "./types";

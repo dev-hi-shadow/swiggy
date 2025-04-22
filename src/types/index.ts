@@ -1,7 +1,7 @@
 import { Optional } from "sequelize";
-import { IUser } from "../modules/users/types";
+import { IUser } from "../modules/Users/types";
 import { Request } from "express";
-import { IRole } from "../modules/roles/types";
+import { IRole } from "../modules/Roles/types";
 
 declare module "sequelize" {
   interface InstanceDestroyOptions {

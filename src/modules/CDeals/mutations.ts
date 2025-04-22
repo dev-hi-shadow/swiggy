@@ -3,14 +3,14 @@ import { Context } from "../../types";
 import { formatResponse, getArguments } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
-import { GetCategories } from "../categories/services";
-import { ICategory } from "../categories/types";
+import { GetCategories } from "../Categories/services";
+import { ICategory } from "../Categories/types";
 import { CreateCDeal, DeleteCDeal, GetCDeal } from "./services";
 import { CDealsType } from "./typeDefs";
 import { ICDeals } from "./types";
 
-export const createRDeal = {
-  type: formatResponseType("createDeal", CDealsType),
+export const createCDeal = {
+  type: formatResponseType("createCDeal", CDealsType),
   args: getArguments<ICDeals>({
     outputType: CDealsType,
     exclude: ["id"],
@@ -18,7 +18,9 @@ export const createRDeal = {
   resolve: async (parent: any, args: ICDeals, context: Context) => {
     const transaction = await sequelize.transaction();
     try {
-      const category:ICategory = await GetCategories(args.category_id) as ICategory;
+      const category: ICategory = (await GetCategories(
+        args.category_id
+      )) as ICategory;
       if (!category) {
         throw new ThrowError(404, "Category not found");
       }
@@ -34,8 +36,8 @@ export const createRDeal = {
   },
 };
 
-export const deleteRDeals = {
-  type: formatResponseType("deleteRDeal", CDealsType),
+export const deleteCDeals = {
+  type: formatResponseType("deleteCDeal", CDealsType),
   args: getArguments<ICDeals>({
     outputType: CDealsType,
     includes: ["id"],

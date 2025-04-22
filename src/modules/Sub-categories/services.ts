@@ -2,7 +2,7 @@ import { ISubcategory } from "./types";
 import { SubCategory } from "../../models";
 import { Transaction } from "sequelize";
 import { ThrowError } from "../../utils/ThrowError";
-import { IUser } from "../users/types";
+import { IUser } from "../Users/types";
 
 export const GetSubCategories = async (payload: ISubcategory) => {
   if (payload?.id) {

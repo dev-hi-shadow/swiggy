@@ -1,4 +1,4 @@
-import { IRestaurant } from "../restaurants/types";
+import { IRestaurant } from "../Restaurants/types";
 
 export interface IRBranch {
   id: number;

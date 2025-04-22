@@ -5,6 +5,7 @@ import {
   GraphQLString,
   GraphQLOutputType,
   GraphQLScalarType,
+  Kind,
 } from "graphql";
 import moment, { MomentInput } from "moment";
 
@@ -17,6 +18,37 @@ export const GraphQLDate = new GraphQLScalarType({
     return moment(value as MomentInput).toDate();
   },
 });
+
+
+ 
+
+export const GraphQLTime = new GraphQLScalarType({
+  name: 'Time',
+  description: 'Time custom scalar, formatted as HH:mm',
+
+  parseValue(value) {
+    const parsed = moment(value as MomentInput, 'HH:mm', true);
+    if (!parsed.isValid()) throw new TypeError(`Invalid time format, expected HH:mm: ${value}`);
+    return parsed.format('HH:mm');
+  },
+
+  serialize(value) {
+    return moment(value as MomentInput).format('HH:mm');
+  },
+
+  parseLiteral(ast) {
+    if (ast.kind === Kind.STRING) {
+      const parsed = moment(ast.value, "HH:mm", true);
+      if (!parsed.isValid())
+        throw new TypeError(
+          `Invalid time format, expected HH:mm: ${ast.value}`
+        );
+      return parsed.format("HH:mm");
+    }
+    throw new TypeError(`Time must be a string in HH:mm format`);
+  }
+});
+
 
 export const formatResponseType = (
   name: string,

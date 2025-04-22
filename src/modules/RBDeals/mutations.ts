@@ -9,8 +9,8 @@ import { CreateRBDeal, DeleteRBDeal, GetRBDeal } from "./services";
 import { RBDealsType } from "./typeDefs";
 import { IRBDeals } from "./types";
 
-export const createRDeal = {
-  type: formatResponseType("createDeal", RBDealsType),
+export const createRBDeal = {
+  type: formatResponseType("createRBDeal", RBDealsType),
   args: getArguments<IRBDeals>({
     outputType: RBDealsType,
     exclude: ["id"],
@@ -38,8 +38,8 @@ export const createRDeal = {
   },
 };
 
-export const deleteRDeals = {
-  type: formatResponseType("deleteRDeal", RBDealsType),
+export const deleteRBDeal = {
+  type: formatResponseType("deleteRBDeal", RBDealsType),
   args: getArguments<IRBDeals>({
     outputType: RBDealsType,
     includes: ["id"],

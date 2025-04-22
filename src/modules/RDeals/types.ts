@@ -1,5 +1,5 @@
-import { IDeal } from "../deals/types";
- import { IRestaurant } from "../restaurants/types";
+import { IDeal } from "../Deals/types";
+ import { IRestaurant } from "../Restaurants/types";
 
 export interface IRDeals {
   id: number;

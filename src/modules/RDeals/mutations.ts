@@ -8,7 +8,7 @@ import { RDealsType } from "./typeDefs";
 import { IRDeals } from "./types";
 
 export const createRDeal = {
-  type: formatResponseType("createDeal", RDealsType),
+  type: formatResponseType("createRDeal", RDealsType),
   args: getArguments<IRDeals>({
     outputType: RDealsType,
     exclude: ["id"],

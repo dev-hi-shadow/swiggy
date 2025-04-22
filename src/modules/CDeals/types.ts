@@ -1,5 +1,5 @@
-import { ICategory } from "../categories/types";
-import { IDeal } from "../deals/types";
+import { ICategory } from "../Categories/types";
+import { IDeal } from "../Deals/types";
 
 export interface ICDeals {
   id: number;

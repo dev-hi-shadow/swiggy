@@ -1,4 +1,4 @@
-import { IDeal } from "../deals/types";
+import { IDeal } from "../Deals/types";
 import { IRBranch } from "../RBranches/types";
 
 export interface IRBDeals {

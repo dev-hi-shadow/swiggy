@@ -1,0 +1,40 @@
+import { IDIngredient } from "../DIngredients/types";
+
+export interface IDish {
+  id: number;
+  restaurant_id: number;
+  branch_id?: number;
+  category_id?: number;
+  subcategory_id?: number;
+  name: string;
+  slug?: string;
+  description?: string;
+  image?: string;
+  banner_image?: string;
+  price: number;
+  original_price?: number;
+  currency: string;
+  discount_percentage?: number;
+  is_available: boolean;
+  is_veg: boolean;
+  is_customizable: boolean;
+  spicy_level?: "mild" | "medium" | "hot";
+  preparation_time_minutes?: number;
+  dietary_tags?: string[];
+  ingredients?: string;
+  availability_start_time?: string;
+  availability_end_time?: string;
+  stock_quantity?: number;
+  min_order_qty?: number;
+  max_order_qty?: number;
+  rating?: number;
+  approval_status: "pending" | "approved" | "rejected";
+  rejection_reason?: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at?: Date | null;
+  created_by?: number | null;
+  updated_by?: number | null;
+  deleted_by?: number | null;
+  ingredients_options?: IDIngredient[];
+}

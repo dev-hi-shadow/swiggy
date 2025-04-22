@@ -1,14 +1,16 @@
-import { Role } from "../modules/roles/model";
-import { User } from "../modules/users/model";
-import { Restaurants } from "../modules/restaurants/model";
+import { Role } from "../modules/Roles/model";
+import { User } from "../modules/Users/model";
+import { Restaurants } from "../modules/Restaurants/model";
 import _ from "lodash";
 import { RBranch } from "../modules/RBranches/model";
-import { Category } from "../modules/categories/model";
-import { SubCategory } from "../modules/sub-categories/model";
-import { Deals } from "../modules/deals/model";
+import { Category } from "../modules/Categories/model";
+import { SubCategory } from "../modules/Sub-categories/model";
+import { Deals } from "../modules/Deals/model";
 import { RDeals } from "../modules/RDeals/model";
 import { CDeals } from "../modules/CDeals/model";
 import { RBDeals } from "../modules/RBDeals/model";
+import { Dish } from "../modules/Dishes/model";
+
 
 const db = {
   User,
@@ -20,7 +22,8 @@ const db = {
   Deals,
   RDeals,
   CDeals,
-  RBDeals
+  RBDeals,
+  Dish
 };
 
 _.forEach(Object.values(db), (model: any) => {
@@ -38,4 +41,5 @@ export {
   RDeals,
   CDeals,
   RBDeals,
+  Dish,
 };
