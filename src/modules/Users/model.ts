@@ -40,12 +40,25 @@ export class User extends Model<IUser, CreationAttrs> implements IUser {
   declare otp_expiry?: Date;
   declare blocked_reason?: string;
   declare language_preference?: string;
+  declare terms_conditions_accepted: boolean;
   declare created_at: Date;
   declare updated_at: Date;
   declare deleted_at?: Date | null;
   declare created_by?: number | null;
   declare updated_by?: number | null;
   declare deleted_by?: number | null;
+
+  public toJSON<T>(): object | T {
+    const values = { ...this.get() } as any;
+    delete values.password;
+    return values;
+  }
+  static associate(models: any) {
+    User.belongsTo(models.Role, {
+      foreignKey: "role_id",
+      as: "role",
+    });
+  }
 }
 
 User.init(
@@ -57,43 +70,43 @@ User.init(
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     gender: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     dob: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: true,
     },
     aadhar_card: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     pan_card: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     voter_id: {
       type: DataTypes.STRING,
@@ -102,7 +115,7 @@ User.init(
 
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     city: {
       type: DataTypes.STRING,
@@ -170,7 +183,7 @@ User.init(
 
     role_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "roles",
         key: "id",
@@ -181,15 +194,19 @@ User.init(
 
     is_active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: true,
     },
     is_verified: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
-
+    terms_conditions_accepted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -205,12 +222,12 @@ User.init(
 
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       defaultValue: DataTypes.NOW,
     },
     deleted_at: {

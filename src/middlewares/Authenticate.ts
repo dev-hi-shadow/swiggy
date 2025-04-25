@@ -47,7 +47,7 @@ export function Authenticate<TSource = any, TArgs = any>(
       }
 
       const userId = decoded.id;
-      const user: IUser = (await getUsers(userId)) as IUser;
+      const user = (await getUsers(userId)) as IUser;
 
       if (!user?.role) {
         throw new GraphQLError("User or role not found", {

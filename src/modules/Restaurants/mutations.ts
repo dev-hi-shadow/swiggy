@@ -21,17 +21,7 @@ export const createRestaurant = {
       "status",
       "rejection_reason",
     ],
-    nullables: [
-      "description",
-      "slug",
-      "cuisine_types",
-      "tags",
-      "website",
-      "gst_number",
-      "fssai_license_number",
-      "bank_account_number",
-      "bank_ifsc_code",
-    ],
+    nullables: ["all"],
   }),
   resolve: Authenticate(
     async (parent: any, args: any, context: Context) => {
@@ -68,11 +58,11 @@ export const updateRestaurant = {
       "slug",
       "cuisine_types",
       "tags",
-      "website",
+      "website_url",
       "gst_number",
       "fssai_license_number",
-      "bank_account_number",
-      "bank_ifsc_code",
+      "account_number",
+      "ifsc_code",
     ],
   }),
   resolve: Authenticate(

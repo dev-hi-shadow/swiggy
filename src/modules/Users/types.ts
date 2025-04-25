@@ -1,4 +1,4 @@
-import { IRole } from "../roles/types";
+import { IRole } from "../Roles/types";
 
 export interface IUser {
   id: number;
@@ -38,5 +38,6 @@ export interface IUser {
   created_by?: number | null;
   updated_by?: number | null;
   deleted_by?: number | null;
+  terms_conditions_accepted: boolean;
   role?: IRole;
 }

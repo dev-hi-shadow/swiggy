@@ -1,6 +1,8 @@
 import { Authenticate } from "../../middlewares/Authenticate";
+import { Context } from "../../types";
 import { formatResponse } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
+import { formatResponseType } from "../../utils/typeDefs";
 import { getUsers } from "./services";
 import { UsersResponse, UserType } from "./typeDefs";
 
@@ -20,16 +22,17 @@ export const usersList = {
 };
 
 export const getProfile = {
-  type: UserType,
+  type: formatResponseType("getProfile", UserType),
   resolve: Authenticate(
-    async (req: any, args: any) => {
+    async (parent: any, args: any, context: Context) => {
       try {
-        const user = await getUsers(req.user_id);
-        return formatResponse({
-          message: "profile fetched successfully",
-          data: user,
-          isToast: false,
-        });
+        const { user } = context.req;
+          const data = await getUsers(user?.id);
+         return formatResponse({
+           message: "profile fetched successfully",
+           data,
+           isToast: false,
+         });
       } catch (error: any) {
         throw new ThrowError(500, error?.message);
       }

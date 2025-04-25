@@ -4,12 +4,19 @@ import { Context } from "../../types";
 import { formatResponse, getArguments } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
-import { createOrUpdateUser, deleteUserById, getUserByQuery } from "./services";
+import {
+  createOrUpdateUser,
+  deleteUserById,
+  getUserByQuery,
+  getUsers,
+} from "./services";
 import { UserType } from "./typeDefs";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { GraphQLString } from "graphql";
 import { IUser } from "./types";
+import { Op } from "sequelize";
+import moment from "moment";
 
 export const createUser = {
   type: formatResponseType("CreateUser", UserType),
@@ -67,7 +74,6 @@ export const updateUser = {
   args: getArguments<IUser>({
     outputType: UserType,
     exclude: [
-      "id",
       "created_at",
       "updated_at",
       "deleted_at",
@@ -80,18 +86,19 @@ export const updateUser = {
     async (parent: any, args: any, context: Context) => {
       const transaction = await sequelize.transaction();
       try {
+        const { id } = args;
         const { user } = context.req;
-        const { body } = args;
-        const { id } = body;
         const userExists = await getUserByQuery({ id });
         if (!userExists) {
           throw new ThrowError(400, "User not found");
         }
         const data = await createOrUpdateUser(
           { ...args, updated_by: user.id ?? null },
-          transaction
+          transaction,
+          true
         );
         await transaction.commit();
+
         if (!data) {
           throw new ThrowError(400, "Something went wrong");
         }
@@ -154,6 +161,7 @@ export const login = {
     includes: ["username", "password"],
   }),
   resolve: async (parent: any, args: any, context: Context) => {
+    const transaction = await sequelize.transaction();
     try {
       const { username, password } = args;
       const user = await getUserByQuery({ username });
@@ -171,12 +179,23 @@ export const login = {
           expiresIn: "1d",
         }
       );
+
+      await createOrUpdateUser(
+        {
+          id: user?.id,
+          device_token: token,
+          last_login_at: moment().toDate(),
+        },
+        transaction
+      );
+      await transaction.commit();
       return formatResponse({
         message: "Login successful",
         data: { token },
         status: 200,
       });
     } catch (error) {
+      await transaction.rollback();
       throw new ThrowError(400, (error as Error)?.message);
     }
   },
@@ -198,33 +217,49 @@ export const register = {
       "updated_by",
     ],
   }),
-  resolve: async (
-    parent: any,
-    { username, password }: { username: string; password: string },
-    context: Context
-  ) => {
+  resolve: async (parent: any, args: IUser, context: Context) => {
     const transaction = await sequelize.transaction();
     try {
-      const user = await getUserByQuery({ username });
+      const query = {
+        [Op.or]: [{ email: args?.email }],
+      };
+      const user = await getUserByQuery(query);
       if (user) {
         throw new ThrowError(400, "User already exists");
       }
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const data = await createOrUpdateUser(
-        {
-          username,
-          password: hashedPassword,
-        },
-        transaction
-      );
+
+      const hashedPassword = await bcrypt.hash(args?.password, 10);
+      args = {
+        ...args,
+        username: `${args?.first_name}_${args?.last_name}`,
+        password: hashedPassword,
+      };
+      const data = (await createOrUpdateUser(args, transaction)) as IUser;
       if (!data) {
         throw new ThrowError(400, "Something went wrong");
       }
+      const token = jwt.sign(
+        { id: data.id },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: "8d",
+        }
+      );
+
+      await createOrUpdateUser(
+        {
+          id: data?.id,
+          device_token: token,
+          last_login_at: moment().toDate(),
+        },
+        transaction
+      );
       await transaction.commit();
       return formatResponse({
         message: "User created successfully",
         data,
         status: 201,
+        token,
       });
     } catch (error) {
       await transaction.rollback();

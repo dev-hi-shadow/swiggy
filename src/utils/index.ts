@@ -17,6 +17,7 @@ interface FormattedResponse {
   isToast: boolean;
   message: string;
   data: any;
+  [key: string]: any;
 }
 
 export const formatResponse = (params: {
@@ -24,8 +25,10 @@ export const formatResponse = (params: {
   data?: any;
   status?: number;
   isToast?: boolean;
+  [key: string]: any;
 }): FormattedResponse => {
   return {
+    ...params,
     status: params.status ?? 200,
     success: true,
     isToast: params.isToast ?? true,
@@ -34,11 +37,15 @@ export const formatResponse = (params: {
   };
 };
 
+interface Argument {
+  type: GraphQLInputType;
+}
+
 interface GetArgumentsConfig<T> {
-  outputType: GraphQLObjectType;
+  outputType: GraphQLObjectType | GraphQLInputObjectType;
   exclude?: (keyof T)[];
-  nullables?: Array<keyof T>;
   includes?: (keyof T)[];
+  nullables?: (keyof T | "all")[];
   typeOverrides?: Record<string, { type: GraphQLInputType }>;
 }
 
@@ -85,7 +92,7 @@ export const getArguments = <T>(
       return;
     }
 
-    let baseType: GraphQLOutputType = field.type;
+    let baseType: GraphQLOutputType | GraphQLInputType = (field as any).type;
     let isNonNull = false;
 
     if (baseType instanceof GraphQLNonNull) {
@@ -100,9 +107,10 @@ export const getArguments = <T>(
     }
 
     if (
-      baseType instanceof GraphQLObjectType ||
-      baseType instanceof GraphQLInterfaceType ||
-      baseType instanceof GraphQLUnionType
+      outputType instanceof GraphQLObjectType &&
+      (baseType instanceof GraphQLObjectType ||
+        baseType instanceof GraphQLInterfaceType ||
+        baseType instanceof GraphQLUnionType)
     ) {
       baseType = GraphQLID;
     }

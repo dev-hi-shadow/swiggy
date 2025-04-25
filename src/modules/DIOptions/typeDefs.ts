@@ -1,4 +1,10 @@
-import { GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
+import {
+  GraphQLFloat,
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLObjectType,
+  GraphQLString,
+} from "graphql";
 import { GraphQLDate } from "../../utils/typeDefs";
 
 export const DIOptionTypes = new GraphQLObjectType({
@@ -15,7 +21,6 @@ export const DIOptionTypes = new GraphQLObjectType({
   }),
 });
 
-
 // DIngredients Input Type
 export const DIOptionInputType = new GraphQLInputObjectType({
   name: "DIOptionInput",
@@ -26,4 +31,3 @@ export const DIOptionInputType = new GraphQLInputObjectType({
     image_url: { type: GraphQLString },
   }),
 });
- 

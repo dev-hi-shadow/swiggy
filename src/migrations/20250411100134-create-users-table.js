@@ -66,6 +66,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      terms_conditions_accepted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       profile_picture: { type: Sequelize.STRING },
       address: { type: Sequelize.TEXT },
       city: { type: Sequelize.STRING },

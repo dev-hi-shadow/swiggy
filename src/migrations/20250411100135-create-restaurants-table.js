@@ -82,6 +82,13 @@ module.exports = {
         defaultValue: "visible",
       },
       cancellation_policy: { type: Sequelize.TEXT },
+      account_number: { type: Sequelize.STRING, allowNull: true },
+      upi_id: { type: Sequelize.STRING, allowNull: true },
+      swift_code: { type: Sequelize.STRING, allowNull: true },
+      bank_name: { type: Sequelize.STRING, allowNull: true },
+      bank_branch: { type: Sequelize.STRING, allowNull: true },
+      ifsc_code: { type: Sequelize.STRING, allowNull: true },
+      account_holder_name: { type: Sequelize.STRING, allowNull: true },
 
       created_at: {
         allowNull: false,

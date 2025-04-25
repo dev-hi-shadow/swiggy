@@ -11,9 +11,10 @@ export const getUsers = async (id?: number) => {
     },
   ];
   if (id) {
-    return await User.findByPk(id, { include });
+    return (await User.findByPk(id, { include }))?.toJSON();
+  } else {
+    return await User.findAndCountAll({ include });
   }
-  return await User.findAndCountAll({ include });
 };
 
 export const getUserByQuery = async (query: any) => {
@@ -22,13 +23,19 @@ export const getUserByQuery = async (query: any) => {
 
 export const createOrUpdateUser = async (
   payload: any,
-  transaction?: Transaction
+  transaction?: Transaction,
+  isReturn?:boolean 
 ) => {
   if (payload.id) {
-    return await User.update(payload, {
+    const data = await User.update(payload, {
       where: { id: payload.id },
+      returning: true,
       transaction,
     });
+    if (isReturn) {
+      return (await User.findByPk(payload.id, { transaction }))?.toJSON();
+    }
+    return data;
   } else {
     return await User.create(payload, { transaction });
   }
