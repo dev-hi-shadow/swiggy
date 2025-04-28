@@ -1,13 +1,23 @@
+import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
 import { Authenticate } from "../../middlewares/Authenticate";
 import { Context } from "../../types";
 import { formatResponse } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
 import { getUsers } from "./services";
-import { UsersResponse, UserType } from "./typeDefs";
+import { UserType } from "./typeDefs";
 
 export const usersList = {
-  type: UsersResponse,
+  type: formatResponseType(
+    "usersList",
+    new GraphQLObjectType({
+      name: "usersList",
+      fields: () => ({
+        count: { type: GraphQLInt },
+        rows: { type: new GraphQLList(UserType) },
+      }),
+    })
+  ),
   resolve: Authenticate(async () => {
     try {
       const users = await getUsers();

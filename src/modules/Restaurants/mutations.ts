@@ -31,6 +31,7 @@ export const createRestaurant = {
         const data = await CreateOrUpdateRestaurant(
           {
             ...args,
+            owner_id: user.id,
             created_by: user.id,
           },
           transaction
@@ -75,7 +76,8 @@ export const updateRestaurant = {
             ...args,
             updated_by: user.id,
           },
-          transaction
+          transaction,
+          true
         );
         await transaction.commit();
         return formatResponse({

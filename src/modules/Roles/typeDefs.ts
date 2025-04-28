@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
@@ -14,6 +15,7 @@ export const RoleType = new GraphQLObjectType({
     created_at: { type: GraphQLDate },
     deleted_at: { type: GraphQLDate },
     updated_at: { type: GraphQLDate },
+    is_admin: { type: GraphQLBoolean },
     name: { type: GraphQLString },
     permissions: { type: GraphQLJSONObject },
   }),

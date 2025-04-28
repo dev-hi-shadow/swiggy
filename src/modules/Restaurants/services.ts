@@ -11,17 +11,22 @@ export const getRestaurants = async (id?: number) => {
 
 export const CreateOrUpdateRestaurant = async (
   payload: any,
-  transaction: Transaction
+  transaction: Transaction,
+  isReturning: boolean = false
 ) => {
   if (payload.id) {
     const restaurant = await Restaurants.findByPk(payload.id);
     if (!restaurant) {
       throw new ThrowError(404, "Restaurant not found");
     }
-    return await  Restaurants.update(payload, {
+    const data = await Restaurants.update(payload, {
       where: { id: payload.id },
       transaction,
     });
+    if (isReturning) {
+      return await Restaurants.findByPk(payload.id, { transaction });
+    }
+    return data;
   } else {
     return await Restaurants.create(payload, { transaction });
   }

@@ -55,18 +55,4 @@ export const UserType = new GraphQLObjectType({
   }),
 });
 
-export const UsersResponse = new GraphQLObjectType({
-  name: "UsersResponse",
-  fields: () => ({
-    message: { type: GraphQLString },
-    data: {
-      type: new GraphQLObjectType({
-        name: "Users",
-        fields: () => ({
-          count: { type: GraphQLInt },
-          rows: { type: new GraphQLList(UserType) },
-        }),
-      }),
-    },
-  }),
-});
+ 

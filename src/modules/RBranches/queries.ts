@@ -9,22 +9,26 @@ import { GetBranchById, GetRBranches } from "./services";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponse, getArguments } from "../../utils";
 import { IRBranch } from "./types";
+import { Authenticate } from "../../middlewares/Authenticate";
 
 export const RBranchList = {
   type: BranchesResponse,
-  resolve: async (parent: any, args: any, context: Context) => {
-    try {
-      const { user } = context.req;
-      const data = await GetRBranches(user);
-      return formatResponse({
-        message: "branches fetched successfully",
-        data,
-        isToast: false,
-      });
-    } catch (error) {
-      throw new ThrowError(500, (error as Error).message);
-    }
-  },
+  resolve: Authenticate(
+    async (parent: any, args: any, context: Context) => {
+      try {
+        const { user } = context.req;
+        const data = await GetRBranches(user);
+        return formatResponse({
+          message: "branches fetched successfully",
+          data,
+          isToast: false,
+        });
+      } catch (error) {
+        throw new ThrowError(500, (error as Error).message);
+      }
+    },
+    [{ resource: "restaurants", actions: ["read"] }]
+  ),
 };
 export const getBranchById = {
   type: getBranchByIdResponse,
