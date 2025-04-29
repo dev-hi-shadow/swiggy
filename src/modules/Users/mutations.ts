@@ -158,13 +158,13 @@ export const login = {
   type: formatResponseType("Login", null, { token: { type: GraphQLString } }),
   args: getArguments<IUser>({
     outputType: UserType,
-    includes: ["username", "password"],
+    includes: ["email", "password"],
   }),
   resolve: async (parent: any, args: any, context: Context) => {
     const transaction = await sequelize.transaction();
     try {
-      const { username, password } = args;
-      const user = await getUserByQuery({ username });
+      const { email, password } = args;
+      const user = await getUserByQuery({ email });
       if (!user) {
         throw new ThrowError(400, "User not found");
       }
@@ -193,6 +193,7 @@ export const login = {
         message: "Login successful",
         data: { token },
         status: 200,
+        token
       });
     } catch (error) {
       await transaction.rollback();

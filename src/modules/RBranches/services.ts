@@ -1,14 +1,16 @@
 import { IUser } from "../Users/types";
-import { RBranch, Restaurants } from "../../models";
+import { RBranch, Restaurants, User } from "../../models";
 import { IRBranch } from "./types";
 
 export const GetRBranches = async (user: IUser) => {
-  const { role } = user;
-  if (role?.is_admin) {
-    return await RBranch.findAll({});
-  } else {
-    return await RBranch.findAll({});
-  }
+   const include = [
+     { model: User, as: "owner" },
+     { model: User, as: "manager" },
+     { model: Restaurants, as: "restaurant" },
+   ];
+   return await RBranch.findAll({
+    include,
+  });
 };
 
 export const GetBranchById = async (

@@ -17,7 +17,7 @@ export class RBranch
   declare email: string;
   declare phone_number?: string;
   declare alternate_phone_number?: string;
-  declare expected_delivery_time: number;
+  declare expected_delivery_time: string;
   declare average_price_for_one: number;
   declare average_price_for_two?: number;
   declare delivery_charge: number;
@@ -34,7 +34,7 @@ export class RBranch
   declare closing_time?: string;
   declare special_opening_time?: string;
   declare special_closing_time?: string;
-  declare average_preparation_time?: number;
+  declare average_preparation_time?: string;
   declare slug?: string;
   declare short_description?: string;
   declare full_description?: string;
@@ -52,23 +52,42 @@ export class RBranch
   declare created_by?: number | null;
   declare updated_by?: number | null;
   declare deleted_by?: number | null;
+  declare country: string;
+  declare state: string;
+  declare city: string;
+  declare zip_code: string;
+  declare landmark?: string;
+  declare block_floor_number?: number;
+  declare nearby_landmark?: string;
 
   static associate(models: any) {
-    //
+    RBranch.belongsTo(models.Restaurants, {
+      foreignKey: "restaurant_id",
+      as: "restaurant",
+    });
+    RBranch.belongsTo(models.User, {
+      foreignKey: "manager_id",
+      as: "manager",
+    });
+
+    RBranch.belongsTo(models.User, {
+      foreignKey: "owner_id",
+      as: "owner",
+    });
   }
 }
 
 RBranch.init(
   {
     id: {
-      allowNull: false,
+      allowNull: true,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
     restaurant_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "restaurants",
         key: "id",
@@ -78,7 +97,7 @@ RBranch.init(
     },
     manager_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "users",
         key: "id",
@@ -89,23 +108,23 @@ RBranch.init(
 
     location: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     longitude: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     latitude: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     image: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phone_number: {
       type: DataTypes.STRING,
@@ -117,12 +136,12 @@ RBranch.init(
     },
 
     expected_delivery_time: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     average_price_for_one: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     average_price_for_two: {
       type: DataTypes.INTEGER,
@@ -130,7 +149,7 @@ RBranch.init(
     },
     delivery_charge: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     min_order_value: {
       type: DataTypes.INTEGER,
@@ -147,51 +166,51 @@ RBranch.init(
 
     rating: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
     },
     is_open: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     is_featured: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
     is_available_for_delivery: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: true,
     },
     is_available_for_pickup: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: true,
     },
     is_veg_only: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
 
     opening_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     closing_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     special_opening_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     special_closing_time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     average_preparation_time: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
 
@@ -225,7 +244,7 @@ RBranch.init(
 
     approval_status: {
       type: DataTypes.ENUM("pending", "approved", "rejected"),
-      allowNull: false,
+      allowNull: true,
       defaultValue: "pending",
     },
     approval_notes: {
@@ -246,13 +265,42 @@ RBranch.init(
       allowNull: true,
       defaultValue: "Asia/Kolkata",
     },
+    block_floor_number: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    nearby_landmark: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    landmark: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    zip_code: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    state: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "India",
+    },
     created_at: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
     updated_at: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },

@@ -12,7 +12,7 @@ module.exports = {
       },
       restaurant_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "restaurants",
           key: "id",
@@ -22,7 +22,7 @@ module.exports = {
       },
       manager_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "users",
           key: "id",
@@ -34,23 +34,23 @@ module.exports = {
       // Core Branch Info
       location: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       longitude: {
         type: Sequelize.FLOAT,
-        allowNull: false,
+        allowNull: true,
       },
       latitude: {
         type: Sequelize.FLOAT,
-        allowNull: false,
+        allowNull: true,
       },
       image: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       phone_number: {
         type: Sequelize.STRING,
@@ -63,12 +63,12 @@ module.exports = {
 
       // Pricing and Delivery
       expected_delivery_time: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       average_price_for_one: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       average_price_for_two: {
         type: Sequelize.INTEGER,
@@ -76,7 +76,7 @@ module.exports = {
       },
       delivery_charge: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       min_order_value: {
         type: Sequelize.INTEGER,
@@ -94,52 +94,53 @@ module.exports = {
       // Ratings and Availability
       rating: {
         type: Sequelize.FLOAT,
-        allowNull: false,
+        allowNull: true,
       },
       is_open: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: true,
       },
       is_featured: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: false,
       },
       is_available_for_delivery: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: true,
       },
       is_available_for_pickup: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: true,
       },
       is_veg_only: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
+        allowNull: true,
+        defaultValue: true,
       },
 
       // Timing
       opening_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       closing_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       special_opening_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       special_closing_time: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       average_preparation_time: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: true,
       },
 
@@ -177,7 +178,7 @@ module.exports = {
       // Admin Control
       approval_status: {
         type: Sequelize.ENUM("pending", "approved", "rejected"),
-        allowNull: false,
+        allowNull: true,
         defaultValue: "pending",
       },
       approval_notes: {
@@ -199,15 +200,44 @@ module.exports = {
         allowNull: true,
         defaultValue: "Asia/Kolkata",
       },
+      block_floor_number: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      nearby_landmark: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      landmark: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      city: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      zip_code: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      state: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      country: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: "India",
+      },
 
       // Soft Delete and Audit
       created_at: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updated_at: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },

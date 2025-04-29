@@ -11,7 +11,7 @@ export interface IRBranch {
   email: string;
   phone_number?: string;
   alternate_phone_number?: string;
-  expected_delivery_time: number;
+  expected_delivery_time: string;
   average_price_for_one: number;
   average_price_for_two?: number;
   delivery_charge: number;
@@ -28,7 +28,7 @@ export interface IRBranch {
   closing_time?: string;
   special_opening_time?: string;
   special_closing_time?: string;
-  average_preparation_time?: number;
+  average_preparation_time?: string;
   slug?: string;
   short_description?: string;
   full_description?: string;
@@ -40,6 +40,13 @@ export interface IRBranch {
   cancellation_policy?: string;
   external_integration_id?: string;
   timezone: string;
+  country: string;
+  state: string;
+  city: string;
+  zip_code: string;
+  landmark?: string;
+  block_floor_number?: number;
+  nearby_landmark?: string;
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date | null;

@@ -72,8 +72,7 @@ export function Authenticate<TSource = any, TArgs = any>(
 
       return resolver(parent, args, context, info);
     } catch (err) {
-      console.error("Token verification failed:", err);
-      throw new GraphQLError("Invalid token", {
+      throw new GraphQLError((err as Error).message, {
         extensions: { code: "UNAUTHENTICATED" },
       });
     }

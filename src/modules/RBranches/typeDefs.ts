@@ -7,12 +7,14 @@ import {
   GraphQLList,
 } from "graphql";
 import { formatResponseType, GraphQLDate } from "../../utils/typeDefs";
+import { RestaurantType } from "../Restaurants/typeDefs";
+import { UserType } from "../Users/typeDefs";
 
-export const BranchType = new GraphQLObjectType({
-  name: "RBranch",
-  fields: () => ({
-    id: { type: GraphQLInt },
+const commonFields = {
+  id: { type: GraphQLInt },
+    description: { type: GraphQLString },
     restaurant_id: { type: GraphQLInt },
+    owner_id: { type: GraphQLInt },
     manager_id: { type: GraphQLInt },
     location: { type: GraphQLString },
     longitude: { type: GraphQLFloat },
@@ -21,7 +23,7 @@ export const BranchType = new GraphQLObjectType({
     email: { type: GraphQLString },
     phone_number: { type: GraphQLString },
     alternate_phone_number: { type: GraphQLString },
-    expected_delivery_time: { type: GraphQLInt },
+    expected_delivery_time: { type: GraphQLString },
     average_price_for_one: { type: GraphQLInt },
     average_price_for_two: { type: GraphQLInt },
     delivery_charge: { type: GraphQLInt },
@@ -38,7 +40,7 @@ export const BranchType = new GraphQLObjectType({
     closing_time: { type: GraphQLString },
     special_opening_time: { type: GraphQLString },
     special_closing_time: { type: GraphQLString },
-    average_preparation_time: { type: GraphQLInt },
+    average_preparation_time: { type: GraphQLString },
     slug: { type: GraphQLString },
     short_description: { type: GraphQLString },
     full_description: { type: GraphQLString },
@@ -50,19 +52,43 @@ export const BranchType = new GraphQLObjectType({
     cancellation_policy: { type: GraphQLString },
     external_integration_id: { type: GraphQLString },
     timezone: { type: GraphQLString },
+    country: { type: GraphQLString },
+    state: { type: GraphQLString },
+    city: { type: GraphQLString },
+    zip_code: { type: GraphQLString },
+    landmark: { type: GraphQLString },
+    block_floor_number: { type: GraphQLInt },
+    nearby_landmark: { type: GraphQLString },
     created_at: { type: GraphQLDate },
     updated_at: { type: GraphQLDate },
     deleted_at: { type: GraphQLDate },
     created_by: { type: GraphQLInt },
     updated_by: { type: GraphQLInt },
     deleted_by: { type: GraphQLInt },
-  }),
+}
+
+export const BranchType = new GraphQLObjectType({
+  name: "RBranch",
+  fields: () => commonFields,
 });
+
+
 
 export const BranchesResponse = formatResponseType(
   "Branches",
-  new GraphQLList(BranchType)
+  new GraphQLList(
+    new GraphQLObjectType({
+      name: "Branches",
+      fields: () => ({
+        ...commonFields,
+        restaurant: { type: RestaurantType },
+        owner: { type: UserType },
+        manager: { type: UserType },
+      }),
+    })
+  )
 );
+
 export const getBranchesByRestaurantId = formatResponseType(
   "getBranchesByRestaurantId",
   new GraphQLList(BranchType)

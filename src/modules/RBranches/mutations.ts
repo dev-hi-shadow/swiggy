@@ -36,18 +36,15 @@ export const createBranch = {
       "short_description",
     ],
   }),
-  resolve: Authenticate(
-    async (parents: any, args: any, context: Context) => {
-      const { user } = context.req;
-      const data = await CreateOrUpdaterBranch(args, user);
-      return formatResponse({
-        message: "Branch created successfully",
-        data,
-        status: 201,
-      });
-    },
-    [{ resource: "restaurant", actions: ["read", "write"] }]
-  ),
+  resolve: Authenticate(async (parents: any, args: any, context: Context) => {
+    const { user } = context.req;
+    const data = await CreateOrUpdaterBranch(args, user);
+    return formatResponse({
+      message: "Branch created successfully",
+      data,
+      status: 201,
+    });
+  }, []),
 };
 
 export const updateBranch = {

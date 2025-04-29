@@ -7,7 +7,7 @@ export const getUsers = async (id?: number) => {
     {
       model: Role,
       as: "role",
-      attributes: ["id", "name", "permissions"],
+      attributes: ["id", "name", "permissions", "is_admin"],
     },
   ];
   if (id) {

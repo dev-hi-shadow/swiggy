@@ -18,12 +18,14 @@ export const RBranchList = {
       try {
         const { user } = context.req;
         const data = await GetRBranches(user);
+        console.log("🚀 ~ data:", data)
         return formatResponse({
           message: "branches fetched successfully",
           data,
           isToast: false,
         });
       } catch (error) {
+        console.log("🚀 ~ error:", error)
         throw new ThrowError(500, (error as Error).message);
       }
     },
