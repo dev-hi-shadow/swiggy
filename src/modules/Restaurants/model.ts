@@ -53,7 +53,10 @@ export class Restaurants
   declare account_holder_name: string | null;
 
   static associate(models: any) {
-    // Define associations here later
+    Restaurants.hasMany(models.RBranch, {
+      foreignKey: "id",
+      as: "branches",
+    });
   }
 }
 

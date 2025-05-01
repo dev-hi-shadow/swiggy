@@ -39,5 +39,10 @@ export interface IUser {
   updated_by?: number | null;
   deleted_by?: number | null;
   terms_conditions_accepted: boolean;
+  facebook?: string;
+  x?: string;
+  linkedin?: string;
+  instagram?: string;
+
   role?: IRole;
 }

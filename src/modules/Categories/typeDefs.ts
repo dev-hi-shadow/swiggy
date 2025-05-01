@@ -1,7 +1,6 @@
 import {
   GraphQLBoolean,
   GraphQLInt,
-  GraphQLList,
   GraphQLObjectType,
   GraphQLString,
 } from "graphql";
@@ -18,12 +17,12 @@ export const CategoryType = new GraphQLObjectType({
     image: { type: GraphQLString },
     banner_image: { type: GraphQLString },
     icon: { type: GraphQLString },
-    display_order: { type: GraphQLString },
+    display_order: { type: GraphQLInt },
     is_featured: { type: GraphQLBoolean },
     is_active: { type: GraphQLBoolean },
     seo_title: { type: GraphQLString },
     seo_description: { type: GraphQLString },
-    seo_keywords: { type: new GraphQLList(GraphQLString) },
+    seo_keywords: { type: GraphQLString },
     created_at: { type: GraphQLDate },
     updated_at: { type: GraphQLDate },
     deleted_at: { type: GraphQLDate },

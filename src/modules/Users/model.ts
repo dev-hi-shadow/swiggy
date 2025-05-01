@@ -41,6 +41,10 @@ export class User extends Model<IUser, CreationAttrs> implements IUser {
   declare blocked_reason?: string;
   declare language_preference?: string;
   declare terms_conditions_accepted: boolean;
+  declare facebook?: string;
+  declare x?: string;
+  declare linkedin?: string;
+  declare instagram?: string;
   declare created_at: Date;
   declare updated_at: Date;
   declare deleted_at?: Date | null;
@@ -207,6 +211,11 @@ User.init(
       allowNull: true,
       defaultValue: false,
     },
+    facebook: { type: DataTypes.STRING, allowNull: true },
+    x: { type: DataTypes.STRING, allowNull: true },
+    linkedin: { type: DataTypes.STRING, allowNull: true },
+    instagram: { type: DataTypes.STRING, allowNull: true },
+
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: true,

@@ -1,5 +1,7 @@
 "use strict";
 
+const { DataTypes } = require("sequelize");
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -86,6 +88,10 @@ module.exports = {
       otp_expiry: { type: Sequelize.DATE },
       blocked_reason: { type: Sequelize.TEXT },
       language_preference: { type: Sequelize.STRING, defaultValue: "en" },
+      facebook: { type: DataTypes.STRING, allowNull: true },
+      x: { type: DataTypes.STRING, allowNull: true },
+      linkedin: { type: DataTypes.STRING, allowNull: true },
+      instagram: { type: DataTypes.STRING, allowNull: true },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

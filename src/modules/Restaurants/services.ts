@@ -1,11 +1,48 @@
-import { Transaction } from "sequelize";
-import { Restaurants } from "../../models";
+import { Op, Transaction } from "sequelize";
+import { RBranch, Restaurants } from "../../models";
 import { ThrowError } from "../../utils/ThrowError";
-export const getRestaurants = async (id?: number) => {
+import { IUser } from "../Users/types";
+export const getRestaurants = async (id?: number, user?: Partial<IUser>) => {
+  let where = {};
+   if (!user?.role?.is_admin) {
+     where = {
+       [Op.or]: {
+         owner_id: user?.id,
+       },
+       approval_status: {
+         [Op.not]: "rejected",
+       },
+       rejection_reason: {
+         [Op.eq]: null,
+       },
+     };
+   }
+  const include = [
+    {
+      model: RBranch,
+      as: "branches",
+      where: {
+        ...(user?.role?.is_admin
+          ? {}
+          : {
+              [Op.or]: {
+                owner_id: user?.id,
+                manager_id: user?.id,
+              },
+              approval_status: {
+                [Op.not]: "rejected",
+              },
+            }),
+      },
+    },
+  ];
   if (id) {
-    return await Restaurants.findByPk(id);
+    return await Restaurants.findByPk(id, { include });
   } else {
-    return await Restaurants.findAll();
+    return await Restaurants.findAll({
+      where,
+      include,
+    });
   }
 };
 
@@ -14,8 +51,16 @@ export const CreateOrUpdateRestaurant = async (
   transaction: Transaction,
   isReturning: boolean = false
 ) => {
+  const include = [
+    {
+      model: RBranch,
+      as: "branches",
+    },
+  ];
   if (payload.id) {
-    const restaurant = await Restaurants.findByPk(payload.id);
+    const restaurant = await Restaurants.findByPk(payload.id, {
+      include,
+    });
     if (!restaurant) {
       throw new ThrowError(404, "Restaurant not found");
     }
@@ -24,10 +69,10 @@ export const CreateOrUpdateRestaurant = async (
       transaction,
     });
     if (isReturning) {
-      return await Restaurants.findByPk(payload.id, { transaction });
+      return await Restaurants.findByPk(payload.id, { include, transaction });
     }
     return data;
   } else {
-    return await Restaurants.create(payload, { transaction });
+    return await Restaurants.create(payload, { transaction, include });
   }
 };

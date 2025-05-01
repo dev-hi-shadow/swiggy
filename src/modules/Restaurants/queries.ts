@@ -8,12 +8,14 @@ import {
 import { IRestaurant } from "./types";
 import { getRestaurants } from "./services";
 import { Authenticate } from "../../middlewares/Authenticate";
+import { Context } from "../../types";
 
 export const RestaurantList = {
   type: RestaurantsResponse,
-  resolve: Authenticate(async () => {
+  resolve: Authenticate(async (parent , args: any, context: Context) => {
     try {
-      const roles = await getRestaurants();
+      const { user } = context.req;
+       const roles = await getRestaurants(undefined, user);
       return formatResponse({
         message: "Restaurants fetched successfully",
         data: roles,
@@ -30,10 +32,11 @@ export const restaurant = {
     includes: ["id"],
   }),
   resolve: Authenticate(
-    async (parent: any, args: any) => {
+    async (parent: any, args: any , context:Context) => {
       const { id } = args;
       try {
-        const roles = await getRestaurants(id);
+const { user } = context.req;
+        const roles = await getRestaurants(id , user);
         return formatResponse({
           message: "Restaurants fetched successfully",
           data: roles,

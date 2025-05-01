@@ -5,6 +5,8 @@ import { formatResponseType } from "../../utils/typeDefs";
 import { BranchType } from "./typeDefs";
 import { IRBranch } from "./types";
 import { CreateOrUpdaterBranch, DeleteBranch } from "./services";
+import sequelize from "../../configs/mysql";
+import { ThrowError } from "../../utils/ThrowError";
 
 export const createBranch = {
   type: formatResponseType("createBranch", BranchType),
@@ -36,37 +38,53 @@ export const createBranch = {
       "short_description",
     ],
   }),
-  resolve: Authenticate(async (parents: any, args: any, context: Context) => {
-    const { user } = context.req;
-    const data = await CreateOrUpdaterBranch(args, user);
-    return formatResponse({
-      message: "Branch created successfully",
-      data,
-      status: 201,
-    });
-  }, []),
+  resolve: Authenticate(
+    async (parents: any, args: any, context: Context) => {
+      const transaction = await sequelize.transaction();
+      try {
+        const { user } = context.req;
+        const data = await CreateOrUpdaterBranch(args, user, transaction, true);
+        return formatResponse({
+          message: "Branch created successfully",
+          data,
+          status: 201,
+        });
+      } catch (error) {
+        await transaction.rollback();
+        throw new ThrowError(500, (error as Error).message);
+      }
+    },
+    [{ resource: "restaurants", actions: ["read", "write"] }]
+  ),
 };
 
 export const updateBranch = {
   type: formatResponseType("updateBranch", BranchType),
   args: getArguments<IRBranch>({
     outputType: BranchType,
-    exclude: ["id", "rating"],
+    exclude: ["rating"],
     nullables: Object.keys({
       all: "",
     } as unknown as IRBranch) as (keyof IRBranch)[],
   }),
   resolve: Authenticate(
     async (parents: any, args: any, context: Context) => {
-      const { user } = context.req;
-      const data = await CreateOrUpdaterBranch(args, user);
-      return formatResponse({
-        message: "Branch created successfully",
-        data,
-        status: 201,
-      });
+      const transaction = await sequelize.transaction();
+      try {
+        const { user } = context.req;
+        const data = await CreateOrUpdaterBranch(args, user, transaction, true);
+        await transaction.commit();
+        return formatResponse({
+          message: "Branch created successfully",
+          data,
+          status: 201,
+        });
+      } catch (error) {
+        await transaction.rollback();
+        throw new ThrowError(500, (error as Error).message);
+      }
     },
-    [{ resource: "restaurant", actions: ["read", "write"] }]
+    [{ resource: "restaurants", actions: ["read", "write"] }]
   ),
 };
 export const deleteBranch = {

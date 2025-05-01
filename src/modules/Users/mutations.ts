@@ -155,7 +155,9 @@ export const deleteUser = {
 };
 
 export const login = {
-  type: formatResponseType("Login", null, { token: { type: GraphQLString } }),
+  type: formatResponseType("Login", UserType, {
+    token: { type: GraphQLString },
+  }),
   args: getArguments<IUser>({
     outputType: UserType,
     includes: ["email", "password"],
@@ -191,9 +193,9 @@ export const login = {
       await transaction.commit();
       return formatResponse({
         message: "Login successful",
-        data: { token },
+        data: user.toJSON(),
         status: 200,
-        token
+        token,
       });
     } catch (error) {
       await transaction.rollback();

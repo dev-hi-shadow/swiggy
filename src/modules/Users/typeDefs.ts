@@ -2,7 +2,6 @@ import {
   GraphQLBoolean,
   GraphQLFloat,
   GraphQLInt,
-  GraphQLList,
   GraphQLObjectType,
   GraphQLString,
 } from "graphql";
@@ -51,6 +50,10 @@ export const UserType = new GraphQLObjectType({
     updated_by: { type: GraphQLInt },
     deleted_by: { type: GraphQLInt },
     terms_conditions_accepted: { type: GraphQLBoolean },
+    facebook: { type: GraphQLString },
+    x: { type: GraphQLString },
+    linkedin: { type: GraphQLString },
+    instagram: { type: GraphQLString },
     role: { type: RoleType },
   }),
 });
