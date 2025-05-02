@@ -7,6 +7,7 @@ import { formatResponseType } from "../../utils/typeDefs";
 import { CreateOrUpdateCategory, DeleteCategory } from "./services";
 import { CategoryType } from "./typeDefs";
 import { ICategory } from "./types";
+import { Authenticate } from "../../middlewares/Authenticate";
 
 export const createCategory = {
   type: formatResponseType("createCategory", CategoryType),
@@ -39,6 +40,7 @@ export const createCategory = {
         isToast: false,
       });
     } catch (error) {
+      console.log("🚀 ~ resolve: ~ error:", error)
       await transaction.rollback();
       throw new ThrowError(500, (error as Error).message);
     }
@@ -53,23 +55,28 @@ export const updateCategory = {
       all: "",
     } as unknown as ICategory) as (keyof ICategory)[],
   }),
-  resolve: async (parent: any, args: ICategory, context: Context) => {
-    const transaction = await sequelize.transaction();
-    try {
-      const { user } = context.req;
-      args = { ...args, updated_by: user.id };
-      const data = await CreateOrUpdateCategory(args, transaction);
-      await transaction.commit();
-      return formatResponse({
-        data,
-        message: "Category updated successfully",
-        isToast: false,
-      });
-    } catch (error) {
-      await transaction.rollback();
-      throw new ThrowError(500, (error as Error).message);
-    }
-  },
+  resolve: Authenticate(
+    async (parent: any, args: ICategory, context: Context) => {
+      console.log("🚀 ~ resolve: ~ args:", args);
+      const transaction = await sequelize.transaction();
+      try {
+        const { user } = context.req;
+        args = { ...args, updated_by: user.id };
+        const data = await CreateOrUpdateCategory(args, transaction);
+        await transaction.commit();
+        return formatResponse({
+          data,
+          message: "Category updated successfully",
+          isToast: false,
+        });
+      } catch (error) {
+        console.log("🚀 ~ resolve: ~ error:", error);
+        await transaction.rollback();
+        throw new ThrowError(500, (error as Error).message);
+      }
+    },
+    [{ resource: "category", actions: ["read", "update", "write"] }]
+  ),
 };
 
 export const deleteCategory = {

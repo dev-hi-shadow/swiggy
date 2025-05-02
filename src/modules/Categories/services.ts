@@ -15,7 +15,7 @@ export const CreateOrUpdateCategory = async (
   payload: ICategory,
   transaction: any
 ) => {
-  if (payload?.id) {
+   if (payload?.id) {
     const data = await Category.update(payload, {
       where: {
         id: payload.id,

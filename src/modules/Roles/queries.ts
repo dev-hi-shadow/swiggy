@@ -1,14 +1,18 @@
-import { GraphQLInt, GraphQLNonNull } from "graphql";
-import { RoleResponse, RolesResponse } from "./typeDefs";
+import { GraphQLInt, GraphQLList, GraphQLNonNull } from "graphql";
+import { RoleResponse, RolesResponse, RoleType } from "./typeDefs";
 import { Role } from "../../models";
-import { formatResponse } from "../../utils/";
+import { formatResponse, getArguments } from "../../utils/";
 import { ThrowError } from "../../utils/ThrowError";
+import { formatResponseType } from "../../utils/typeDefs";
+import { GetRoles } from "./services";
+import { Authenticate } from "../../middlewares/Authenticate";
+import { IRole } from "./types";
 
-export const getAllRoles = {
-  type: RolesResponse,
-  resolve: async () => {
+export const roleList = {
+  type: formatResponseType("roleList", new GraphQLList(RoleType)),
+  resolve: Authenticate(async () => {
     try {
-       const roles = await Role.findAll({});
+      const roles = await GetRoles();
       return formatResponse({
         message: "Roles fetched successfully",
         data: roles,
@@ -16,15 +20,16 @@ export const getAllRoles = {
     } catch (err: any) {
       throw new ThrowError(500, err?.message);
     }
-  },
+  }, []),
 };
 
 export const getRoleById = {
-  type: RoleResponse,
-  args: {
-    id: { type: new GraphQLNonNull(GraphQLInt) },
-  },
-  resolve: async (_: unknown, { id }: { id: number }) => {
+  type: formatResponseType(`getRoleById`, RoleType),
+  args: getArguments<IRole>({
+    outputType: RoleType,
+    includes: ["id"],
+  }),
+  resolve: Authenticate(async (_: unknown, { id }: { id: number }) => {
     try {
       const role = await Role.findByPk(id);
       return formatResponse({
@@ -34,5 +39,5 @@ export const getRoleById = {
     } catch (err: any) {
       throw new ThrowError(500, err?.message);
     }
-  },
+  }, []),
 };

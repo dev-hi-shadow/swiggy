@@ -27,3 +27,11 @@ export const DeleteRole = async (
     transaction,
   });
 };
+
+export const GetRoles = async (id?: number) => {
+  if (id) {
+    return await Role.findByPk(id);
+  } else {
+    return await Role.findAll({});
+  }
+};

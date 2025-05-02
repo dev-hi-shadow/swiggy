@@ -1,9 +1,10 @@
-import {getAllRoles , getRoleById} from "./queries";
- import { createOrUpdateRole, deleteRole } from "./mutations";
+import { roleList, getRoleById } from "./queries";
+import { createRole, updateRole, deleteRole } from "./mutations";
 export default {
-  Query: { getAllRoles, getRoleById },
+  Query: { roleList, getRoleById },
   Mutation: {
-    createOrUpdateRole,
+    createRole,
+    updateRole,
     deleteRole,
   },
 };
