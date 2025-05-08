@@ -15,7 +15,7 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      is_admin : {
+      is_admin: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false,
@@ -25,7 +25,7 @@ module.exports = {
         allowNull: true,
       },
       permissions: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
         allowNull: true,
         defaultValue: {},
       },

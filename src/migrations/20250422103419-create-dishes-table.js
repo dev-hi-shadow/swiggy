@@ -112,7 +112,7 @@ module.exports = {
         allowNull: true,
       },
       dietary_tags: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       ingredients: {

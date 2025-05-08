@@ -177,7 +177,7 @@ Dish.init(
       allowNull: true,
     },
     dietary_tags: {
-      type: DataTypes.JSON,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     ingredients: {

@@ -40,8 +40,7 @@ export const createCategory = {
         isToast: false,
       });
     } catch (error) {
-      console.log("🚀 ~ resolve: ~ error:", error)
-      await transaction.rollback();
+       await transaction.rollback();
       throw new ThrowError(500, (error as Error).message);
     }
   },
@@ -57,8 +56,7 @@ export const updateCategory = {
   }),
   resolve: Authenticate(
     async (parent: any, args: ICategory, context: Context) => {
-      console.log("🚀 ~ resolve: ~ args:", args);
-      const transaction = await sequelize.transaction();
+       const transaction = await sequelize.transaction();
       try {
         const { user } = context.req;
         args = { ...args, updated_by: user.id };
@@ -70,8 +68,7 @@ export const updateCategory = {
           isToast: false,
         });
       } catch (error) {
-        console.log("🚀 ~ resolve: ~ error:", error);
-        await transaction.rollback();
+         await transaction.rollback();
         throw new ThrowError(500, (error as Error).message);
       }
     },

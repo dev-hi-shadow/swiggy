@@ -108,8 +108,8 @@ Restaurants.init(
     founded_year: { type: DataTypes.INTEGER },
     total_branches: { type: DataTypes.INTEGER },
 
-    cuisine_types: { type: DataTypes.JSON },
-    tags: { type: DataTypes.JSON },
+    cuisine_types: { type: DataTypes.TEXT },
+    tags: { type: DataTypes.TEXT },
 
     average_rating: {
       type: DataTypes.FLOAT,

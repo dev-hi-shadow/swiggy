@@ -2,7 +2,7 @@ export interface IRole {
   id: number;
   name: string;
   description?: string | null;
-  permissions: Record<string, any>;
+  permissions: string;
   is_active: boolean;
   created_at: Date;
   updated_at: Date;

@@ -43,8 +43,8 @@ module.exports = {
       founded_year: { type: Sequelize.INTEGER },
       total_branches: { type: Sequelize.INTEGER },
 
-      cuisine_types: { type: Sequelize.JSON },
-      tags: { type: Sequelize.JSON },
+      cuisine_types: { type: Sequelize.TEXT },
+      tags: { type: Sequelize.TEXT },
 
       average_rating: {
         type: Sequelize.FLOAT,

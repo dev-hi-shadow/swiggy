@@ -1,4 +1,4 @@
-import { GraphQLList } from "graphql";
+import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
 import { formatResponse, getArguments } from "../../utils";
 import { formatResponseType } from "../../utils/typeDefs";
 import { SubCategoryType } from "./typeDefs";
@@ -6,17 +6,24 @@ import { ISubcategory } from "./types";
 import { Context } from "../../types";
 import { ThrowError } from "../../utils/ThrowError";
 import { GetSubCategories } from "./services";
+import { Authenticate } from "../../middlewares/Authenticate";
 
 export const subCategoriesList = {
   type: formatResponseType(
     "SubCategoriesList",
-    new GraphQLList(SubCategoryType)
+    new GraphQLObjectType({
+      name: "subCategories",
+      fields: () => ({
+        count: { type: GraphQLInt },
+        rows: { type: new GraphQLList(SubCategoryType) },
+      }),
+    })
   ),
   args: getArguments<ISubcategory>({
     outputType: SubCategoryType,
     includes: ["category_id"],
   }),
-  resolve: async (params: any, args: ISubcategory, context: Context) => {
+  resolve: Authenticate( async (params: any, args: ISubcategory, context: Context) => {
     try {
       const data = await GetSubCategories(args);
       return formatResponse({
@@ -26,7 +33,7 @@ export const subCategoriesList = {
     } catch (error) {
       throw new ThrowError(500, (error as Error).message);
     }
-  },
+  } , [{resource : "sub_category" , actions  : ["read"]}]),
 };
 
 export const getSubcategoryById = {

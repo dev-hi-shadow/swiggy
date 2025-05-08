@@ -9,7 +9,7 @@ import { getUsers } from "../modules/Users/services";
 type Action = "read" | "write" | "delete" | "update";
 
 interface PermissionOptions {
-  resource: keyof IRole["permissions"];
+  resource: string;
   actions: Action[];
 }
 
@@ -57,7 +57,7 @@ export function Authenticate<TSource = any, TArgs = any>(
 
       context.req.user = { ...user, role: user.role };
 
-      const rolePermissions = user.role.permissions || {};
+      const rolePermissions = JSON.parse(user.role.permissions ?? "{}");
 
       const hasAllPermissions = _.every(options, ({ resource, actions }) => {
         const allowedActions = _.get(rolePermissions, resource, []) as Action[];

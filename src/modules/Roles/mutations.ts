@@ -34,7 +34,7 @@ export const createRole = {
       }
     },
     [
-      // { resource: "roles", actions: ["read", "update", "write"] }
+      { resource: "roles", actions: ["read", "update", "write"] }
     ]
   ),
 };
