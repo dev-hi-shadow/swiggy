@@ -5,6 +5,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("dishes", {
+      // Core identifiers
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -13,12 +14,7 @@ module.exports = {
       restaurant_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "restaurants",
-          key: "id",
-        },
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
+        references: { model: "restaurants", key: "id" },
       },
       branch_id: {
         type: Sequelize.INTEGER,
@@ -27,132 +23,172 @@ module.exports = {
           model: "r_branches",
           key: "id",
         },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
       },
       category_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "categories",
           key: "id",
         },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
       },
       subcategory_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "sub_categories",
           key: "id",
         },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      slug: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: true,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      image: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      banner_image: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      price: {
-        type: Sequelize.FLOAT,
-        allowNull: false,
-      },
-      original_price: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-      },
-      currency: {
-        type: Sequelize.STRING(5),
-        allowNull: false,
-        defaultValue: "INR",
-      },
-      discount_percentage: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-      },
-      is_available: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      is_veg: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      is_customizable: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-      spicy_level: {
-        type: Sequelize.ENUM("mild", "medium", "hot"),
-        allowNull: true,
-      },
-      preparation_time_minutes: {
+      parent_dish_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
+        // references: {},
       },
-      dietary_tags: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+
+      // Basic details
+      name: { type: Sequelize.STRING, allowNull: false },
+      slug: Sequelize.STRING,
+      description: Sequelize.TEXT,
+      long_description: Sequelize.TEXT,
+      image: Sequelize.STRING,
+      banner_image: Sequelize.STRING,
+      gallery_images: Sequelize.JSON,
+      video_url: Sequelize.STRING,
+      tags: Sequelize.JSON,
+
+      // Pricing
+      price: { type: Sequelize.FLOAT, allowNull: false },
+      original_price: Sequelize.FLOAT,
+      currency: { type: Sequelize.STRING, allowNull: false },
+      price_unit: Sequelize.ENUM(
+        "per_item",
+        "per_kg",
+        "per_litre",
+        "per_person"
+      ),
+      tax_percentage: Sequelize.FLOAT,
+      tax_inclusive: Sequelize.BOOLEAN,
+      service_charge_percentage: Sequelize.FLOAT,
+      packaging_charge: Sequelize.FLOAT,
+
+      // Discounts
+      discount_type: {
+        type: Sequelize.ENUM("fixed", "percentage"),
+        allowNull: false,
       },
-      ingredients: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      availability_start_time: {
-        type: Sequelize.TIME,
-        allowNull: true,
-      },
-      availability_end_time: {
-        type: Sequelize.TIME,
-        allowNull: true,
-      },
-      stock_quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      min_order_qty: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      max_order_qty: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      rating: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-        defaultValue: 0,
-      },
+      discount_amount: Sequelize.FLOAT,
+      discount_percentage: Sequelize.FLOAT,
+      discount_start_time: Sequelize.STRING,
+      discount_end_time: Sequelize.STRING,
+      discount_max_quantity: Sequelize.INTEGER,
+      discount_min_quantity: Sequelize.INTEGER,
+      discount_max_quantity_per_user: Sequelize.INTEGER,
+      discount_min_quantity_per_user: Sequelize.INTEGER,
+      discount_max_quantity_per_order: Sequelize.INTEGER,
+      discount_min_quantity_per_order: Sequelize.INTEGER,
+      discount_max_quantity_per_user_per_order: Sequelize.INTEGER,
+      discount_min_quantity_per_user_per_order: Sequelize.INTEGER,
+      discount_applies_with_coupon: Sequelize.BOOLEAN,
+      promo_code_applicable: Sequelize.BOOLEAN,
+
+      // Availability & timing
+      is_available: { type: Sequelize.BOOLEAN, allowNull: false },
+      availability_days: Sequelize.JSON,
+      availability_start_time: Sequelize.TIME,
+      availability_end_time: Sequelize.STRING,
+      blackout_dates: Sequelize.JSON,
+      preorder_available: Sequelize.BOOLEAN,
+      preorder_hours: Sequelize.INTEGER,
+      delivery_eta_minutes: Sequelize.INTEGER,
+      delivery_buffer_minutes: Sequelize.INTEGER,
+      preparation_time_minutes: Sequelize.INTEGER,
+
+      // Quantity & inventory
+      stock_quantity: Sequelize.INTEGER,
+      min_order_qty: Sequelize.INTEGER,
+      max_order_qty: Sequelize.INTEGER,
+      available_portions: Sequelize.INTEGER,
+
+      // Dietary & customizations
+      is_veg: { type: Sequelize.BOOLEAN, allowNull: false },
+      is_customizable: { type: Sequelize.BOOLEAN, allowNull: false },
+      spicy_level: Sequelize.ENUM("mild", "medium", "hot"),
+      dietary_tags: Sequelize.JSON,
+      allergen_info: Sequelize.JSON,
+      allergens: Sequelize.JSON,
+      ingredients: Sequelize.TEXT,
+      ingredients_options: Sequelize.JSON,
+      customization_groups: Sequelize.JSON,
+
+      // Add-ons & variants
+      addons_group_ids: Sequelize.JSON,
+      variant_group_ids: Sequelize.JSON,
+      combo_group_id: Sequelize.INTEGER,
+      is_part_of_combo: Sequelize.BOOLEAN,
+      meal_time_tags: Sequelize.JSON,
+
+      // Attributes / visibility
+      featured: Sequelize.BOOLEAN,
+      is_featured: Sequelize.BOOLEAN,
+      is_new: Sequelize.BOOLEAN,
+      is_popular: Sequelize.BOOLEAN,
+      is_recommended: Sequelize.BOOLEAN,
+      is_best_seller: Sequelize.BOOLEAN,
+      is_chef_special: Sequelize.BOOLEAN,
+
+      // Ordering channels
+      is_available_for_delivery: Sequelize.BOOLEAN,
+      is_available_for_pickup: Sequelize.BOOLEAN,
+      is_available_for_dine_in: Sequelize.BOOLEAN,
+      is_available_for_takeaway: Sequelize.BOOLEAN,
+
+      // Regional / localization
+      language_tags: Sequelize.JSON,
+      regional_exclusivity: Sequelize.JSON,
+      cuisine_type: Sequelize.JSON,
+      name_translations: Sequelize.JSON,
+      description_translations: Sequelize.JSON,
+
+      // SEO & marketing
+      seo_title: Sequelize.STRING,
+      seo_description: Sequelize.STRING,
+      promo_tags: Sequelize.JSON,
+      share_url: Sequelize.STRING,
+
+      // Ratings & analytics
+      rating: Sequelize.FLOAT,
+      total_reviews: Sequelize.INTEGER,
+      average_rating: Sequelize.FLOAT,
+      total_orders: Sequelize.INTEGER,
+      reorder_rate: Sequelize.FLOAT,
+      cart_additions: Sequelize.INTEGER,
+      view_count: Sequelize.INTEGER,
+      conversion_rate: Sequelize.FLOAT,
+      user_likes_count: Sequelize.INTEGER,
+      order_count: Sequelize.INTEGER,
+      reorder_probability: Sequelize.FLOAT,
+      smart_tags: Sequelize.JSON,
+
+      // Kitchen / operations
+      kitchen_station: Sequelize.STRING,
+      priority_order: Sequelize.INTEGER,
+      shelf_life_hours: Sequelize.INTEGER,
+      is_ready_to_eat: Sequelize.BOOLEAN,
+
+      // Compliance
       approval_status: {
         type: Sequelize.ENUM("pending", "approved", "rejected"),
         allowNull: false,
-        defaultValue: "pending",
       },
-      rejection_reason: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
+      rejection_reason: Sequelize.STRING,
+      fssai_info: Sequelize.JSON,
+
+      // AI / ML
+      auto_tags: Sequelize.JSON,
+      paired_dish_ids: Sequelize.JSON,
+
+      // Audit
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -163,13 +199,9 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      deleted_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
+      deleted_at: Sequelize.DATE,
       created_by: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: {
           model: "users",
           key: "id",
@@ -177,7 +209,6 @@ module.exports = {
       },
       updated_by: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: {
           model: "users",
           key: "id",
@@ -185,7 +216,6 @@ module.exports = {
       },
       deleted_by: {
         type: Sequelize.INTEGER,
-        allowNull: true,
         references: {
           model: "users",
           key: "id",

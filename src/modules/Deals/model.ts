@@ -1,7 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import sequelize from "../../configs/mysql";
 import { CreationAttrs } from "../../types";
-import {  IDeal} from "./types";
+import { IDeal } from "./types";
 
 export class Deals extends Model<IDeal, CreationAttrs<IDeal>> implements IDeal {
   declare id: number;
@@ -21,7 +21,16 @@ export class Deals extends Model<IDeal, CreationAttrs<IDeal>> implements IDeal {
   declare created_by?: number | null;
   declare updated_by?: number | null;
   declare deleted_by?: number | null;
-  
+  declare target_dish_ids: number[] | string;
+  declare buy_quantity: number;
+  declare get_quantity: number;
+  declare get_dish_ids: number[] | string;
+  declare user_limit: number;
+  declare scope: "dish" | "category" | "restaurant" | "branch";
+  declare scope_id: number;
+  declare usage_limit_per_user: number;
+  declare total_usage_limit: number;
+
   static associate(models: any) {
     //
   }
@@ -46,8 +55,23 @@ Deals.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    scope: {
+      type: DataTypes.ENUM("dish", "category", "restaurant", "branch"),
+      allowNull: false,
+    },
+    scope_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     discount_type: {
-      type: DataTypes.ENUM("percentage", "flat"),
+      type: DataTypes.ENUM(
+        "percentage",
+        "flat",
+        "bogo",
+        "bxgy",
+        "free_delivery",
+        "free_item"
+      ),
       allowNull: false,
     },
     discount_value: {
@@ -62,6 +86,37 @@ Deals.init(
       type: DataTypes.FLOAT,
       allowNull: true,
     },
+    target_dish_ids: {
+      type: DataTypes.STRING,
+      set: function (val: number[]) {
+        this.setDataValue("get_dish_ids", val.join(","));
+      },
+      get: function () {
+        const value = this.getDataValue("target_dish_ids");
+        return value ? (value as string)?.split(",") : [];
+      },
+    },
+
+    buy_quantity: {
+      type: DataTypes.INTEGER,
+    },
+    get_quantity: {
+      type: DataTypes.INTEGER,
+    },
+    get_dish_ids: {
+      type: DataTypes.STRING,
+      set: function (val: number[]) {
+        this.setDataValue("get_dish_ids", val.join(","));
+      },
+      get: function () {
+        const value = this.getDataValue("get_dish_ids");
+        return value ? (value as string)?.split(",") : [];
+      },
+    },
+    user_limit: {
+      type: DataTypes.INTEGER,
+    },
+
     start_date: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -75,6 +130,15 @@ Deals.init(
       allowNull: false,
       defaultValue: true,
     },
+    usage_limit_per_user: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    total_usage_limit: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: true,

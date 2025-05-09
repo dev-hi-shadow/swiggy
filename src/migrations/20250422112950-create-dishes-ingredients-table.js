@@ -45,6 +45,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("dish_ingredients");
+    await queryInterface.dropTable("d_ingredients");
   },
 };

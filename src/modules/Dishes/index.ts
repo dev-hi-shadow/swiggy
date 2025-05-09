@@ -1,5 +1,7 @@
-import { createDish } from "./mutations";
+import { createDish, updateDish } from "./mutations";
+import { dishList, getDishById } from "./queries";
 
 export default {
-  Mutation: { createDish },
+  Query: { dishList, getDishById },
+  Mutation: { createDish, updateDish },
 };

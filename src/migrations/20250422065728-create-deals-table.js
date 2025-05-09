@@ -21,8 +21,23 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      scope: {
+        type: Sequelize.ENUM("dish", "category", "restaurant", "branch"),
+        allowNull: false,
+      },
+      scope_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       discount_type: {
-        type: Sequelize.ENUM("percentage", "flat"),
+        type: Sequelize.ENUM(
+          "percentage",
+          "flat",
+          "bogo",
+          "bxgy",
+          "free_delivery",
+          "free_item"
+        ),
         allowNull: false,
       },
       discount_value: {
@@ -37,6 +52,23 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: true,
       },
+      target_dish_ids: {
+        type: Sequelize.STRING,
+      },
+
+      buy_quantity: {
+        type: Sequelize.INTEGER,
+      },
+      get_quantity: {
+        type: Sequelize.INTEGER,
+      },
+      get_dish_ids: {
+        type: Sequelize.STRING,
+      },
+      user_limit: {
+        type: Sequelize.INTEGER,
+      },
+
       start_date: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -50,6 +82,15 @@ module.exports = {
         allowNull: false,
         defaultValue: true,
       },
+      usage_limit_per_user: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      total_usage_limit: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+
       created_by: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -57,6 +98,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        OnDelete: "CASCADE",
+        OnUpdate: "CASCADE",
       },
       updated_by: {
         type: Sequelize.INTEGER,
@@ -65,6 +108,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        OnDelete: "CASCADE",
+        OnUpdate: "CASCADE",
       },
       deleted_by: {
         type: Sequelize.INTEGER,
@@ -73,16 +118,18 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        OnDelete: "CASCADE",
+        OnUpdate: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.NOW,
       },
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.NOW,
       },
       deleted_at: {
         type: Sequelize.DATE,

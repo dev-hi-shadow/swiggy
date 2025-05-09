@@ -64,6 +64,7 @@ export const DishType = new GraphQLObjectType({
     branch: { type: BranchType },
     category: { type: CategoryType },
     subcategory: { type: SubCategoryType },
+    ingredients_options: { type: new GraphQLList(DIngredientsType) },
   }),
 });
 
