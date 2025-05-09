@@ -1,7 +1,7 @@
 import { formatResponseType } from "../../utils/typeDefs";
 import { CreateDishInputType, DishType } from "./typeDefs";
 import { formatResponse, getArguments } from "../../utils";
-import { IDish } from "./types";
+import { IDish, nullable } from "./types";
 import { Context } from "../../types";
 import sequelize from "../../configs/mysql";
 import { ThrowError } from "../../utils/ThrowError";
@@ -12,22 +12,7 @@ export const createDish = {
   args: getArguments<IDish>({
     outputType: CreateDishInputType,
     exclude: ["id"],
-    nullables: [
-      "restaurant_id",
-      "branch_id",
-      "slug",
-      "description",
-      "image",
-      "banner_image",
-      "original_price",
-      "currency",
-      "discount_percentage",
-      "is_available",
-      "spicy_level",
-      "dietary_tags",
-      "ingredients",
-      "ingredients_options",
-    ],
+    nullables: nullable,
   }),
   resolve: async (parent: any, args: any, context: Context) => {
     const transaction = await sequelize.transaction();

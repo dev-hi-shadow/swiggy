@@ -8,7 +8,7 @@ import {
 } from "graphql";
 import { GraphQLDate } from "../../utils/typeDefs";
 import { DIOptionInputType, DIOptionTypes } from "../DIOptions/typeDefs";
-
+ 
 const commonFields = {
   id: { type: GraphQLInt },
   dish_id: { type: GraphQLInt },
@@ -31,11 +31,7 @@ export const DIngredientsType = new GraphQLObjectType({
  export const DIngredientInputType = new GraphQLInputObjectType({
    name: "IngredientInput",
    fields: () => ({
-     name: { type: GraphQLString },
-     image_url: { type: GraphQLString },
-     has_options: { type: GraphQLBoolean },
-     created_at: { type: GraphQLDate },
-     updated_at: { type: GraphQLDate },
+     ...commonFields,
      options: {
        type: new GraphQLList(DIOptionInputType),
      },
