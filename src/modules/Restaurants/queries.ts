@@ -15,10 +15,10 @@ export const RestaurantList = {
   resolve: Authenticate(async (parent , args: any, context: Context) => {
     try {
       const { user } = context.req;
-       const roles = await getRestaurants(undefined, user);
-      return formatResponse({
+       const data = await getRestaurants(undefined, user);
+       return formatResponse({
         message: "Restaurants fetched successfully",
-        data: roles,
+        data,
       });
     } catch (err: any) {
       throw new ThrowError(500, err?.message);

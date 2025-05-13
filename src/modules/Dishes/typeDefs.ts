@@ -19,6 +19,7 @@ import {
 } from "../DIngredients/typeDefs";
  import { RestaurantType } from "../Restaurants/typeDefs";
 import { DCustomizationType } from "../IDCustomizations/typeDefs";
+import { UserType } from "../Users/typeDefs";
 
 
 const commonDishFields = {
@@ -60,32 +61,15 @@ const commonDishFields = {
   video_url: { type: GraphQLString },
   tags: { type: GraphQLJSONObject },
 
-  price_unit: {
-    type: new GraphQLEnumType({
-      name: "PriceUnit",
-      values: {
-        per_item: { value: "per_item" },
-        per_kg: { value: "per_kg" },
-        per_litre: { value: "per_litre" },
-        per_person: { value: "per_person" },
-      },
-    }),
-  },
+  price_unit: { type: GraphQLString },
   tax_percentage: { type: GraphQLFloat },
   tax_inclusive: { type: GraphQLBoolean },
   service_charge_percentage: { type: GraphQLFloat },
   packaging_charge: { type: GraphQLFloat },
 
-  discount_type: {
-    type: new GraphQLEnumType({
-      name: "DiscountType",
-      values: {
-        fixed: { value: "fixed" },
-        percentage: { value: "percentage" },
-      },
-    }),
-  },
+  discount_type: { type: GraphQLString },
   discount_amount: { type: GraphQLFloat },
+  discount_amount_upto: { type: GraphQLFloat },
   discount_start_time: { type: GraphQLDate },
   discount_end_time: { type: GraphQLDate },
   discount_max_quantity: { type: GraphQLInt },
@@ -96,8 +80,8 @@ const commonDishFields = {
   discount_min_quantity_per_order: { type: GraphQLInt },
   discount_applies_with_coupon: { type: GraphQLBoolean },
   promo_code_applicable: { type: GraphQLBoolean },
-  availability_days: { type: GraphQLJSONObject },
-  blackout_dates: { type: GraphQLJSONObject },
+  availability_days: { type: new GraphQLList(GraphQLString) },
+  blackout_dates: { type: new GraphQLList(GraphQLString) },
   preorder_available: { type: GraphQLBoolean },
   preorder_hours: { type: GraphQLInt },
   delivery_eta_minutes: { type: GraphQLInt },
@@ -160,6 +144,7 @@ export const DishType = new GraphQLObjectType({
     branch: { type: BranchType },
     category: { type: CategoryType },
     subcategory: { type: SubCategoryType },
+    created_by: { type: UserType },
     ingredients_options: { type: new GraphQLList(DIngredientsType) },
   }),
 });

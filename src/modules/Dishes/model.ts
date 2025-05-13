@@ -226,7 +226,7 @@ Dish.init(
     },
     parent_dish_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       // references: {},
     },
 
@@ -290,8 +290,12 @@ Dish.init(
     available_portions: DataTypes.INTEGER,
 
     // Dietary & customizations
-    is_veg: { type: DataTypes.BOOLEAN, allowNull: false },
-    is_customizable: { type: DataTypes.BOOLEAN, allowNull: false },
+    is_veg: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+    is_customizable: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     spicy_level: DataTypes.ENUM("mild", "medium", "hot"),
     dietary_tags: DataTypes.JSON,
     allergen_info: DataTypes.JSON,
@@ -359,6 +363,7 @@ Dish.init(
     approval_status: {
       type: DataTypes.ENUM("pending", "approved", "rejected"),
       allowNull: false,
+      defaultValue: "pending",
     },
     rejection_reason: DataTypes.STRING,
     fssai_info: DataTypes.JSON,

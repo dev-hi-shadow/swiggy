@@ -4,22 +4,24 @@ import { ThrowError } from "../../utils/ThrowError";
 import { IUser } from "../Users/types";
 export const getRestaurants = async (id?: number, user?: Partial<IUser>) => {
   let where = {};
-   if (!user?.role?.is_admin) {
-     where = {
-       [Op.or]: {
-         owner_id: user?.id,
-       },
-       approval_status: {
-         [Op.not]: "rejected",
-       },
-       rejection_reason: {
-         [Op.eq]: null,
-       },
-     };
-   }
+
+  if (!user?.role?.is_admin) {
+    where = {
+      [Op.or]: {
+        owner_id: user?.id,
+      },
+      approval_status: {
+        [Op.not]: "rejected",
+      },
+      rejection_reason: {
+        [Op.eq]: null,
+      },
+    };
+  }
   const include = [
     {
       model: RBranch,
+      required: false,
       as: "branches",
       where: {
         ...(user?.role?.is_admin
