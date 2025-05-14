@@ -9,18 +9,21 @@ import {
   GraphQLEnumType,
 } from "graphql";
 import { GraphQLJSONObject } from "graphql-type-json";
-import { GraphQLDate, GraphQLTime } from "../../utils/typeDefs";
- import { CategoryType } from "../Categories/typeDefs";
+import {
+  formatResponseType,
+  GraphQLDate,
+  GraphQLTime,
+} from "../../utils/typeDefs";
+import { CategoryType } from "../Categories/typeDefs";
 import { SubCategoryType } from "../Sub-categories/typeDefs";
 import { BranchType } from "../RBranches/typeDefs";
 import {
   DIngredientInputType,
   DIngredientsType,
 } from "../DIngredients/typeDefs";
- import { RestaurantType } from "../Restaurants/typeDefs";
+import { RestaurantType } from "../Restaurants/typeDefs";
 import { DCustomizationType } from "../IDCustomizations/typeDefs";
 import { UserType } from "../Users/typeDefs";
-
 
 const commonDishFields = {
   id: { type: GraphQLInt },
@@ -42,7 +45,7 @@ const commonDishFields = {
   is_customizable: { type: GraphQLBoolean },
   spicy_level: { type: GraphQLString },
   preparation_time_minutes: { type: GraphQLInt },
-  dietary_tags: { type: GraphQLJSONObject },
+  dietary_tags: { type: new GraphQLList(GraphQLString) },
   ingredients: { type: GraphQLString },
   availability_start_time: { type: GraphQLTime },
   availability_end_time: { type: GraphQLTime },
@@ -57,9 +60,9 @@ const commonDishFields = {
   deleted_at: { type: GraphQLDate },
   parent_dish_id: { type: GraphQLInt },
   long_description: { type: GraphQLString },
-  gallery_images: { type: GraphQLJSONObject },
+  gallery_images: { type: new GraphQLList(GraphQLString) },
   video_url: { type: GraphQLString },
-  tags: { type: GraphQLJSONObject },
+  tags: { type: new GraphQLList(GraphQLString) },
 
   price_unit: { type: GraphQLString },
   tax_percentage: { type: GraphQLFloat },
@@ -87,15 +90,9 @@ const commonDishFields = {
   delivery_eta_minutes: { type: GraphQLInt },
   delivery_buffer_minutes: { type: GraphQLInt },
   available_portions: { type: GraphQLInt },
-  ingredients_options: { type: GraphQLJSONObject },
-  customization_groups: { type: GraphQLJSONObject },
   allergen_info: { type: GraphQLJSONObject },
-  allergens: { type: GraphQLJSONObject },
-  addons_group_ids: { type: GraphQLJSONObject },
-  variant_group_ids: { type: GraphQLJSONObject },
-  combo_group_id: { type: GraphQLInt },
-  is_part_of_combo: { type: GraphQLBoolean },
-  meal_time_tags: { type: GraphQLJSONObject },
+  allergens: { type: new GraphQLList(GraphQLString) },
+  meal_time_tags: { type: new GraphQLList(GraphQLString) },
   featured: { type: GraphQLBoolean },
   is_featured: { type: GraphQLBoolean },
   is_new: { type: GraphQLBoolean },
@@ -108,13 +105,13 @@ const commonDishFields = {
   is_available_for_dine_in: { type: GraphQLBoolean },
   is_available_for_takeaway: { type: GraphQLBoolean },
   language_tags: { type: GraphQLJSONObject },
-  regional_exclusivity: { type: GraphQLJSONObject },
-  cuisine_type: { type: GraphQLJSONObject },
+  regional_exclusivity: { type: new GraphQLList(GraphQLString) },
+  cuisine_type: { type: new GraphQLList(GraphQLString) },
   name_translations: { type: GraphQLJSONObject },
   description_translations: { type: GraphQLJSONObject },
   seo_title: { type: GraphQLString },
   seo_description: { type: GraphQLString },
-  promo_tags: { type: GraphQLJSONObject },
+  promo_tags: { type: new GraphQLList(GraphQLString) },
   share_url: { type: GraphQLString },
   total_reviews: { type: GraphQLInt },
   average_rating: { type: GraphQLFloat },
@@ -126,14 +123,13 @@ const commonDishFields = {
   user_likes_count: { type: GraphQLInt },
   order_count: { type: GraphQLInt },
   reorder_probability: { type: GraphQLFloat },
-  smart_tags: { type: GraphQLJSONObject },
+  smart_tags: { type: new GraphQLList(GraphQLString) },
   kitchen_station: { type: GraphQLString },
   priority_order: { type: GraphQLInt },
   shelf_life_hours: { type: GraphQLInt },
   is_ready_to_eat: { type: GraphQLBoolean },
   fssai_info: { type: GraphQLJSONObject },
-  auto_tags: { type: GraphQLJSONObject },
-  paired_dish_ids: { type: GraphQLJSONObject },
+  auto_tags: { type: new GraphQLList(GraphQLString) },
 };
 
 export const DishType = new GraphQLObjectType({
@@ -156,6 +152,32 @@ export const CreateDishInputType = new GraphQLInputObjectType({
     ingredients_options: {
       type: new GraphQLList(DIngredientInputType),
     },
-    customization_groups: { type: DCustomizationType },
+    customization_groups: {
+      type: new GraphQLList(DCustomizationType),
+    },
   },
 });
+
+export const getDishByCategoriesResponseType = formatResponseType(
+  "getDishByCategoriesType",
+  new GraphQLList(
+    new GraphQLObjectType({
+      name: "getDishByCategoriesData",
+      fields: () => ({
+        count: { type: GraphQLInt },
+        rows: {
+          type: new GraphQLList(
+            new GraphQLObjectType({
+              name: "getDishByCategoriesRows",
+              fields: () => ({
+                id: { type: GraphQLInt },
+                name: { type: GraphQLString },
+                dishes: { type: new GraphQLList(DishType) },
+              }),
+            })
+          ),
+        },
+      }),
+    })
+  )
+);

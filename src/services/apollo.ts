@@ -9,6 +9,7 @@ export async function createApolloMiddleware(): Promise<RequestHandler> {
   const schema = new GraphQLSchema({
     query: RootQuery,
     mutation: RootMutation,
+    
   });
   const server = new ApolloServer({
     schema,

@@ -11,11 +11,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      restaurant_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: "restaurants", key: "id" },
-      },
+      restaurant_id: { type: Sequelize.INTEGER, allowNull: false },
       branch_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -42,7 +38,7 @@ module.exports = {
       },
       parent_dish_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         // references: {},
       },
 
@@ -53,9 +49,9 @@ module.exports = {
       long_description: Sequelize.TEXT,
       image: Sequelize.STRING,
       banner_image: Sequelize.STRING,
-      gallery_images: Sequelize.JSON,
+      gallery_images: Sequelize.TEXT,
       video_url: Sequelize.STRING,
-      tags: Sequelize.JSON,
+      tags: Sequelize.TEXT,
 
       // Pricing
       price: { type: Sequelize.FLOAT, allowNull: false },
@@ -78,6 +74,7 @@ module.exports = {
         allowNull: false,
       },
       discount_amount: Sequelize.FLOAT,
+      discount_amount_upto: Sequelize.FLOAT,
       discount_percentage: Sequelize.FLOAT,
       discount_start_time: Sequelize.STRING,
       discount_end_time: Sequelize.STRING,
@@ -89,15 +86,18 @@ module.exports = {
       discount_min_quantity_per_order: Sequelize.INTEGER,
       discount_max_quantity_per_user_per_order: Sequelize.INTEGER,
       discount_min_quantity_per_user_per_order: Sequelize.INTEGER,
-      discount_applies_with_coupon: Sequelize.BOOLEAN,
+      discount_applies_with_coupon: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       promo_code_applicable: Sequelize.BOOLEAN,
 
       // Availability & timing
       is_available: { type: Sequelize.BOOLEAN, allowNull: false },
-      availability_days: Sequelize.JSON,
-      availability_start_time: Sequelize.TIME,
+      availability_days: Sequelize.TEXT,
+      availability_start_time: Sequelize.STRING,
       availability_end_time: Sequelize.STRING,
-      blackout_dates: Sequelize.JSON,
+      blackout_dates: Sequelize.TEXT,
       preorder_available: Sequelize.BOOLEAN,
       preorder_hours: Sequelize.INTEGER,
       delivery_eta_minutes: Sequelize.INTEGER,
@@ -111,22 +111,25 @@ module.exports = {
       available_portions: Sequelize.INTEGER,
 
       // Dietary & customizations
-      is_veg: { type: Sequelize.BOOLEAN, allowNull: false },
-      is_customizable: { type: Sequelize.BOOLEAN, allowNull: false },
+      is_veg: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      is_customizable: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       spicy_level: Sequelize.ENUM("mild", "medium", "hot"),
-      dietary_tags: Sequelize.JSON,
+      dietary_tags: Sequelize.TEXT,
       allergen_info: Sequelize.JSON,
-      allergens: Sequelize.JSON,
+      allergens: Sequelize.TEXT,
       ingredients: Sequelize.TEXT,
-      ingredients_options: Sequelize.JSON,
-      customization_groups: Sequelize.JSON,
 
       // Add-ons & variants
-      addons_group_ids: Sequelize.JSON,
-      variant_group_ids: Sequelize.JSON,
-      combo_group_id: Sequelize.INTEGER,
-      is_part_of_combo: Sequelize.BOOLEAN,
-      meal_time_tags: Sequelize.JSON,
+
+      meal_time_tags: Sequelize.TEXT,
 
       // Attributes / visibility
       featured: Sequelize.BOOLEAN,
@@ -146,14 +149,14 @@ module.exports = {
       // Regional / localization
       language_tags: Sequelize.JSON,
       regional_exclusivity: Sequelize.JSON,
-      cuisine_type: Sequelize.JSON,
+      cuisine_type: Sequelize.TEXT,
       name_translations: Sequelize.JSON,
       description_translations: Sequelize.JSON,
 
       // SEO & marketing
       seo_title: Sequelize.STRING,
       seo_description: Sequelize.STRING,
-      promo_tags: Sequelize.JSON,
+      promo_tags: Sequelize.TEXT,
       share_url: Sequelize.STRING,
 
       // Ratings & analytics
@@ -168,7 +171,7 @@ module.exports = {
       user_likes_count: Sequelize.INTEGER,
       order_count: Sequelize.INTEGER,
       reorder_probability: Sequelize.FLOAT,
-      smart_tags: Sequelize.JSON,
+      smart_tags: Sequelize.TEXT,
 
       // Kitchen / operations
       kitchen_station: Sequelize.STRING,
@@ -180,13 +183,13 @@ module.exports = {
       approval_status: {
         type: Sequelize.ENUM("pending", "approved", "rejected"),
         allowNull: false,
+        defaultValue: "pending",
       },
       rejection_reason: Sequelize.STRING,
       fssai_info: Sequelize.JSON,
 
       // AI / ML
-      auto_tags: Sequelize.JSON,
-      paired_dish_ids: Sequelize.JSON,
+      auto_tags: Sequelize.TEXT,
 
       // Audit
       created_at: {

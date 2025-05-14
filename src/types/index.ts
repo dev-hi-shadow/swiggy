@@ -9,6 +9,19 @@ declare module "sequelize" {
   }
 }
 
+
+export interface IPagination<T> {
+  page?: number;
+  pageSize?: number;
+  total?: number;
+  totalPages?: number;
+  filter?: Record<keyof T | string, unknown>;
+  sortBy?: keyof T | string;
+  sortOrder?: "asc" | "desc";
+  last_id?: number;
+  [key: string]: unknown;
+}
+
 export interface ResponseOptions<T = any> {
   message?: string;
   data?: T;

@@ -49,13 +49,19 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare price: number;
   declare original_price: number | undefined;
   declare currency: string;
-  declare price_unit: "per_item" | "per_kg" | "per_litre" | "per_person" | undefined;
+  declare price_unit:
+    | "per_item"
+    | "per_kg"
+    | "per_litre"
+    | "per_person"
+    | undefined;
   declare tax_percentage: number | undefined;
   declare tax_inclusive: boolean | undefined;
   declare service_charge_percentage: number | undefined;
   declare packaging_charge: number | undefined;
   declare discount_type: "percentage" | "fixed";
   declare discount_amount: number | undefined;
+  declare discount_amount_upto: number | undefined;
   declare discount_percentage: number | undefined;
   declare discount_start_time: string | undefined;
   declare discount_end_time: string | undefined;
@@ -93,8 +99,9 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare addons_group_ids: number[] | undefined;
   declare variant_group_ids: number[] | undefined;
   declare combo_group_id: number | undefined;
-  declare is_part_of_combo: boolean | undefined;
-  declare meal_time_tags: ("breakfast" | "lunch" | "dinner" | "snack")[] | undefined;
+  declare meal_time_tags:
+    | ("breakfast" | "lunch" | "dinner" | "snack")[]
+    | undefined;
   declare featured: boolean;
   declare is_featured: boolean;
   declare is_new: boolean;
@@ -133,9 +140,10 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare is_ready_to_eat: boolean | undefined;
   declare approval_status: "pending" | "approved" | "rejected";
   declare rejection_reason: string | undefined;
-  declare fssai_info: { license_number: string; label_required: boolean; } | undefined;
+  declare fssai_info:
+    | { license_number: string; label_required: boolean }
+    | undefined;
   declare auto_tags: string[] | undefined;
-  declare paired_dish_ids: number[] | undefined;
   declare created_at: Date;
   declare updated_at: Date;
   declare deleted_at: Date | null | undefined;
@@ -144,33 +152,29 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare deleted_by: number | null | undefined;
   declare parent_dish_id: number | undefined;
 
+  
+  // associations of sequelize modal
+  static associate(models: any) {
+    Dish.belongsTo(models?.Category, {
+      as: "category",
+      foreignKey: "category_id",
+    });
+  }
+
   // Example of a method to calculate the discounted price
   calculateDiscountedPrice(): number {
     if (this.discount_type === "percentage" && this.discount_percentage) {
-      return this.price - (this.price * this.discount_percentage) / 100;
+      let discountedPrice = (this.price * this.discount_percentage) / 100;
+      if (discountedPrice > this.price) {
+        discountedPrice = this.price;
+      } else if (discountedPrice > (this?.discount_amount_upto ?? 0)) {
+        discountedPrice = this?.discount_amount_upto ?? 0;
+      }
+      return this.price - discountedPrice;
     } else if (this.discount_type === "fixed" && this.discount_amount) {
       return this.price - this.discount_amount;
     }
     return this.price;
-  }
-
-  // Example of a method to check if the dish is available
-  isCurrentlyAvailable(): boolean {
-    const now = new Date();
-    const startTime = this.availability_start_time ?
-       new Date(`1970-01-01T${this.availability_start_time}Z`)
-      : null;
-    const endTime = this.availability_end_time ?
-       new Date(`1970-01-01T${this.availability_end_time}Z`)
-      : null;
-
-    if (startTime && endTime) {
-      const currentTime = new Date(
-        `1970-01-01T${now.toISOString().split("T")[1]}`
-      );
-      return currentTime >= startTime && currentTime <= endTime;
-    }
-    return this.is_available;
   }
 
   // Example of a method to check if the dish is vegetarian
@@ -188,8 +192,6 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
     return this.delivery_eta_minutes ?? 30;
   }
 }
-
-
 
 Dish.init(
   {
@@ -237,9 +239,9 @@ Dish.init(
     long_description: DataTypes.TEXT,
     image: DataTypes.STRING,
     banner_image: DataTypes.STRING,
-    gallery_images: DataTypes.JSON,
+    gallery_images: DataTypes.TEXT,
     video_url: DataTypes.STRING,
-    tags: DataTypes.JSON,
+    tags: DataTypes.TEXT,
 
     // Pricing
     price: { type: DataTypes.FLOAT, allowNull: false },
@@ -257,6 +259,7 @@ Dish.init(
       allowNull: false,
     },
     discount_amount: DataTypes.FLOAT,
+    discount_amount_upto: DataTypes.FLOAT,
     discount_percentage: DataTypes.FLOAT,
     discount_start_time: DataTypes.STRING,
     discount_end_time: DataTypes.STRING,
@@ -268,15 +271,28 @@ Dish.init(
     discount_min_quantity_per_order: DataTypes.INTEGER,
     discount_max_quantity_per_user_per_order: DataTypes.INTEGER,
     discount_min_quantity_per_user_per_order: DataTypes.INTEGER,
-    discount_applies_with_coupon: DataTypes.BOOLEAN,
+    discount_applies_with_coupon: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     promo_code_applicable: DataTypes.BOOLEAN,
 
     // Availability & timing
     is_available: { type: DataTypes.BOOLEAN, allowNull: false },
-    availability_days: DataTypes.JSON,
-    availability_start_time: DataTypes.TIME,
+    availability_days: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue("availability_days", JSON.stringify(value));
+      },
+      get: function () {
+        return JSON.stringify(this.getDataValue("availability_days"))?.split(
+          ","
+        );
+      },
+    },
+    availability_start_time: DataTypes.STRING,
     availability_end_time: DataTypes.STRING,
-    blackout_dates: DataTypes.JSON,
+    blackout_dates: DataTypes.TEXT,
     preorder_available: DataTypes.BOOLEAN,
     preorder_hours: DataTypes.INTEGER,
     delivery_eta_minutes: DataTypes.INTEGER,
@@ -297,19 +313,14 @@ Dish.init(
       defaultValue: false,
     },
     spicy_level: DataTypes.ENUM("mild", "medium", "hot"),
-    dietary_tags: DataTypes.JSON,
+    dietary_tags: DataTypes.TEXT,
     allergen_info: DataTypes.JSON,
-    allergens: DataTypes.JSON,
+    allergens: DataTypes.TEXT,
     ingredients: DataTypes.TEXT,
-    ingredients_options: DataTypes.JSON,
-    customization_groups: DataTypes.JSON,
 
     // Add-ons & variants
-    addons_group_ids: DataTypes.JSON,
-    variant_group_ids: DataTypes.JSON,
-    combo_group_id: DataTypes.INTEGER,
-    is_part_of_combo: DataTypes.BOOLEAN,
-    meal_time_tags: DataTypes.JSON,
+
+    meal_time_tags: DataTypes.TEXT,
 
     // Attributes / visibility
     featured: DataTypes.BOOLEAN,
@@ -329,14 +340,14 @@ Dish.init(
     // Regional / localization
     language_tags: DataTypes.JSON,
     regional_exclusivity: DataTypes.JSON,
-    cuisine_type: DataTypes.JSON,
+    cuisine_type: DataTypes.TEXT,
     name_translations: DataTypes.JSON,
     description_translations: DataTypes.JSON,
 
     // SEO & marketing
     seo_title: DataTypes.STRING,
     seo_description: DataTypes.STRING,
-    promo_tags: DataTypes.JSON,
+    promo_tags: DataTypes.TEXT,
     share_url: DataTypes.STRING,
 
     // Ratings & analytics
@@ -351,7 +362,7 @@ Dish.init(
     user_likes_count: DataTypes.INTEGER,
     order_count: DataTypes.INTEGER,
     reorder_probability: DataTypes.FLOAT,
-    smart_tags: DataTypes.JSON,
+    smart_tags: DataTypes.TEXT,
 
     // Kitchen / operations
     kitchen_station: DataTypes.STRING,
@@ -369,8 +380,7 @@ Dish.init(
     fssai_info: DataTypes.JSON,
 
     // AI / ML
-    auto_tags: DataTypes.JSON,
-    paired_dish_ids: DataTypes.JSON,
+    auto_tags: DataTypes.TEXT,
 
     // Audit
     created_at: {

@@ -1,7 +1,7 @@
 import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
 import { Authenticate } from "../../middlewares/Authenticate";
 import { Context } from "../../types";
-import { formatResponse } from "../../utils";
+import { formatResponse, getDefaultArgs } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
 import { getUsers } from "./services";
@@ -18,6 +18,7 @@ export const usersList = {
       }),
     })
   ),
+  args: { ...getDefaultArgs },
   resolve: Authenticate(async () => {
     try {
       const users = await getUsers();
@@ -37,12 +38,12 @@ export const getProfile = {
     async (parent: any, args: any, context: Context) => {
       try {
         const { user } = context.req;
-          const data = await getUsers(user?.id);
-         return formatResponse({
-           message: "profile fetched successfully",
-           data,
-           isToast: false,
-         });
+        const data = await getUsers(user?.id);
+        return formatResponse({
+          message: "profile fetched successfully",
+          data,
+          isToast: false,
+        });
       } catch (error: any) {
         throw new ThrowError(500, error?.message);
       }

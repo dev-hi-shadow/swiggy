@@ -1,7 +1,7 @@
-import { GraphQLInt, GraphQLList, GraphQLNonNull } from "graphql";
-import { RoleResponse, RolesResponse, RoleType } from "./typeDefs";
+import { GraphQLList } from "graphql";
+import { RoleType } from "./typeDefs";
 import { Role } from "../../models";
-import { formatResponse, getArguments } from "../../utils/";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils/";
 import { ThrowError } from "../../utils/ThrowError";
 import { formatResponseType } from "../../utils/typeDefs";
 import { GetRoles } from "./services";
@@ -10,6 +10,7 @@ import { IRole } from "./types";
 
 export const roleList = {
   type: formatResponseType("roleList", new GraphQLList(RoleType)),
+  args: getDefaultArgs,
   resolve: Authenticate(async () => {
     try {
       const roles = await GetRoles();

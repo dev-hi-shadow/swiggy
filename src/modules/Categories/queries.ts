@@ -1,5 +1,5 @@
 import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
-import { formatResponse, getArguments } from "../../utils";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils";
 import { formatResponseType } from "../../utils/typeDefs";
 import { CategoryType } from "./typeDefs";
 import { ThrowError } from "../../utils/ThrowError";
@@ -20,6 +20,7 @@ export const categoryList = {
       },
     })
   ),
+  args: getDefaultArgs,
   resolve: async (parent: any, args: any, context: Context) => {
     try {
       const data = await GetCategories();
@@ -36,10 +37,12 @@ export const categoryList = {
 
 export const getCategoryById = {
   type: formatResponseType("CategoryById", CategoryType),
-  args: getArguments<ICategory>({
-    outputType: CategoryType,
-    includes: ["id"],
-  }),
+  args: {
+    ...getArguments<ICategory>({
+      outputType: CategoryType,
+      includes: ["id"],
+    }),
+  },
   resolve: async (parent: any, args: ICategory, context: any) => {
     try {
       const data = await GetCategories(args.id);

@@ -6,17 +6,20 @@ import {
 } from "./typeDefs";
  import { GetBranchById, GetRBranches } from "./services";
 import { ThrowError } from "../../utils/ThrowError";
-import { formatResponse, getArguments } from "../../utils";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils";
 import { IRBranch } from "./types";
 import { Authenticate } from "../../middlewares/Authenticate";
 import { Context } from "../../types";
 
 export const RBranchList = {
   type: BranchesResponse,
-  args: getArguments<IRBranch>({
-    outputType: BranchType,
-    includes: ["restaurant_id"],
-  }),
+  args: {
+    ...getDefaultArgs,
+    ...getArguments<IRBranch>({
+      outputType: BranchType,
+      includes: ["restaurant_id"],
+    }),
+  },
   resolve: Authenticate(
     async (parent: any, args: any, context: Context) => {
       try {

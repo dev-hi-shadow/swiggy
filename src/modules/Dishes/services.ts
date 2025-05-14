@@ -1,7 +1,9 @@
-import { Transaction } from "sequelize";
-import { Dish } from "../../models";
+import { Op, Transaction } from "sequelize";
+import { Dish  , Category } from "../../models";
 import { IUser } from "../Users/types";
-
+import { IPagination } from "../../types";
+import { IDish } from "./types";
+ 
 export const CreateOrUpdateDish = async (
   payload: any,
   transaction?: Transaction,
@@ -35,4 +37,30 @@ export const getDishes = async (id?: number, user?: IUser) => {
     });
   }
   return data;
+};
+
+
+export const GetDishesByCategory = async (payload: IPagination<IDish>) => {
+  const result = await Category.findAndCountAll({
+    // Remove 'plain: true' (not needed for findAndCountAll)
+    include: [
+      {
+        model: Dish,
+        order: [["id", "ASC"]],
+        limit: payload?.pageSize,
+        as: "dishes",
+        where: {
+          ...(payload?.last_id ? { id: { [Op.gt]: payload?.last_id } } : {}),
+          ...(payload?.category_id
+            ? { category_id: payload?.category_id }
+            : {}),
+        },
+        separate: true,
+      },
+    ],
+  });
+    return {
+      count: result.count,
+      rows: result.rows.map((category) => category.toJSON()),
+    };
 };

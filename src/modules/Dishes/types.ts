@@ -27,6 +27,7 @@ export interface IDish {
   packaging_charge?: number;
   discount_type: "fixed" | "percentage";
   discount_amount?: number;
+  discount_amount_upto?: number;
   discount_percentage?: number;
   discount_start_time?: string;
   discount_end_time?: string;
@@ -41,7 +42,7 @@ export interface IDish {
   discount_applies_with_coupon?: boolean;
   promo_code_applicable?: boolean;
   is_available: boolean;
-  availability_days?: string[];
+  availability_days?: string[] | string;
   availability_start_time?: string;
   availability_end_time?: string;
   blackout_dates?: string[];
@@ -63,10 +64,6 @@ export interface IDish {
   ingredients?: string;
   ingredients_options?: IDIngredient[];
   customization_groups?: IDCustomization[];
-  addons_group_ids?: number[];
-  variant_group_ids?: number[];
-  combo_group_id?: number;
-  is_part_of_combo?: boolean;
   meal_time_tags?: ("breakfast" | "lunch" | "dinner" | "snack")[];
   featured: boolean;
   is_featured: boolean;
@@ -111,7 +108,6 @@ export interface IDish {
     label_required: boolean;
   };
   auto_tags?: string[];
-  paired_dish_ids?: number[];
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date | null;
@@ -182,14 +178,8 @@ export const nullable: (keyof IDish)[] = [
   "delivery_eta_minutes",
   "delivery_buffer_minutes",
   "available_portions",
-  "ingredients_options",
-  "customization_groups",
   "allergen_info",
   "allergens",
-  "addons_group_ids",
-  "variant_group_ids",
-  "combo_group_id",
-  "is_part_of_combo",
   "meal_time_tags",
   "featured",
   "is_featured",
@@ -228,7 +218,6 @@ export const nullable: (keyof IDish)[] = [
   "is_ready_to_eat",
   "fssai_info",
   "auto_tags",
-  "paired_dish_ids",
   "ingredients_options",
   "customization_groups",
 ];

@@ -1,11 +1,11 @@
 import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
 import { formatResponseType } from "../../utils/typeDefs";
-import { DishType } from "./typeDefs";
+import { DishType, getDishByCategoriesResponseType } from "./typeDefs";
 import { IDish } from "./types";
-import { Context } from "../../types";
+import { Context, IPagination } from "../../types";
 import { Authenticate } from "../../middlewares/Authenticate";
-import { getDishes } from "./services";
-import { getArguments } from "../../utils";
+import { getDishes, GetDishesByCategory } from "./services";
+import { getArguments, getDefaultArgs } from "../../utils";
 
 export const dishList = {
   type: formatResponseType(
@@ -20,9 +20,10 @@ export const dishList = {
       },
     })
   ),
+  args: getDefaultArgs,
   resolve: Authenticate(
     async (parent: any, args: IDish, context: Context) => {
-       const data = await getDishes();
+      const data = await getDishes();
       return {
         message: "Dishes fetched successfully",
         data,
@@ -41,6 +42,27 @@ export const getDishById = {
   resolve: Authenticate(
     async (parent: any, args: IDish, context: Context) => {
       const data = await getDishes();
+      return {
+        message: "Dishes fetched successfully",
+        data,
+      };
+    },
+    [{ resource: "dishes", actions: ["read"] }]
+  ),
+};
+export const getDishByCategories = {
+  type: getDishByCategoriesResponseType,
+  args: {
+    ...getDefaultArgs,
+    ...getArguments<IDish>({
+      outputType: DishType,
+      includes: ["category_id"],
+    }),
+  },
+  resolve: Authenticate(
+    async (parent: any, args: IPagination<IDish>, context: Context) => {
+      const data = await GetDishesByCategory(args);
+      console.log("🚀 ~ data:", data);
       return {
         message: "Dishes fetched successfully",
         data,

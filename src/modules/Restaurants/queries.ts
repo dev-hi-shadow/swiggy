@@ -1,4 +1,4 @@
-import { formatResponse, getArguments } from "../../utils";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils";
 import { ThrowError } from "../../utils/ThrowError";
 import {
   RestaurantResponse,
@@ -12,6 +12,7 @@ import { Context } from "../../types";
 
 export const RestaurantList = {
   type: RestaurantsResponse,
+  args : getDefaultArgs,
   resolve: Authenticate(async (parent , args: any, context: Context) => {
     try {
       const { user } = context.req;

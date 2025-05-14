@@ -2,14 +2,17 @@ import {
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLInputType,
+  GraphQLInt,
   GraphQLInterfaceType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLOutputType,
+  GraphQLString,
   GraphQLUnionType,
 } from "graphql";
-import _ from "lodash";
+import { GraphQLJSONObject } from "graphql-type-json";
+import _, { filter } from "lodash";
 
 interface FormattedResponse {
   status: number;
@@ -52,7 +55,14 @@ interface GetArgumentsConfig<T> {
 interface Argument {
   type: GraphQLInputType;
 }
-
+export const getDefaultArgs = {
+  limit: { type: GraphQLInt },
+  page: { type: GraphQLInt },
+  search: { type: GraphQLString },
+  sortBy: { type: GraphQLString },
+  sortOrder: { type: GraphQLString },
+  filter: { type: GraphQLJSONObject },
+};
 export const getArguments = <T>(
   config: GetArgumentsConfig<T>
 ): { [key: string]: Argument } => {

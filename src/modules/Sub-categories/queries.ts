@@ -1,5 +1,5 @@
 import { GraphQLInt, GraphQLList, GraphQLObjectType } from "graphql";
-import { formatResponse, getArguments } from "../../utils";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils";
 import { formatResponseType } from "../../utils/typeDefs";
 import { SubCategoryType } from "./typeDefs";
 import { ISubcategory } from "./types";
@@ -19,21 +19,27 @@ export const subCategoriesList = {
       }),
     })
   ),
-  args: getArguments<ISubcategory>({
-    outputType: SubCategoryType,
-    includes: ["category_id"],
-  }),
-  resolve: Authenticate( async (params: any, args: ISubcategory, context: Context) => {
-    try {
-      const data = await GetSubCategories(args);
-      return formatResponse({
-        data,
-        message: "Subcategory fetched successfully",
-      });
-    } catch (error) {
-      throw new ThrowError(500, (error as Error).message);
-    }
-  } , [{resource : "sub_category" , actions  : ["read"]}]),
+  args: {
+    ...getDefaultArgs,
+    ...getArguments<ISubcategory>({
+      outputType: SubCategoryType,
+      includes: ["category_id"],
+    }),
+  },
+  resolve: Authenticate(
+    async (params: any, args: ISubcategory, context: Context) => {
+      try {
+        const data = await GetSubCategories(args);
+        return formatResponse({
+          data,
+          message: "Subcategory fetched successfully",
+        });
+      } catch (error) {
+        throw new ThrowError(500, (error as Error).message);
+      }
+    },
+    [{ resource: "sub_category", actions: ["read"] }]
+  ),
 };
 
 export const getSubcategoryById = {

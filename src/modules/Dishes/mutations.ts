@@ -12,7 +12,7 @@ export const createDish = {
   args: getArguments<IDish>({
     outputType: CreateDishInputType,
     exclude: ["id"],
-    nullables: nullable,
+    nullables: [...nullable, "customization_groups"],
   }),
   resolve: async (parent: any, args: any, context: Context) => {
     const transaction = await sequelize.transaction();

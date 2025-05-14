@@ -45,6 +45,14 @@ export class Category
   declare created_by?: number | null;
   declare updated_by?: number | null;
   declare deleted_by?: number | null;
+
+  // associations
+  static associate(models: any) {
+    Category.hasMany(models.Dish, {
+      foreignKey: "category_id",
+      as: "dishes",
+    });
+  }
 }
 
 Category.init(
