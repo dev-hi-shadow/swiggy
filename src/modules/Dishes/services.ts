@@ -1,14 +1,17 @@
 import { Op, Transaction } from "sequelize";
-import { Dish  , Category } from "../../models";
+import { Dish, Category } from "../../models";
 import { IUser } from "../Users/types";
 import { IPagination } from "../../types";
 import { IDish } from "./types";
- 
+
 export const CreateOrUpdateDish = async (
   payload: any,
   transaction?: Transaction,
   isReturn = true
 ) => {
+  try{
+
+  
   if (payload?.id) {
     const UpdatedDish = await Dish.update(payload, {
       where: {
@@ -23,6 +26,8 @@ export const CreateOrUpdateDish = async (
     return await Dish.create(payload, {
       transaction,
     });
+  } } catch(error){
+    console.log("🚀 ~ error:", error);
   }
 };
 
@@ -39,10 +44,8 @@ export const getDishes = async (id?: number, user?: IUser) => {
   return data;
 };
 
-
 export const GetDishesByCategory = async (payload: IPagination<IDish>) => {
   const result = await Category.findAndCountAll({
-    // Remove 'plain: true' (not needed for findAndCountAll)
     include: [
       {
         model: Dish,
@@ -59,8 +62,5 @@ export const GetDishesByCategory = async (payload: IPagination<IDish>) => {
       },
     ],
   });
-    return {
-      count: result.count,
-      rows: result.rows.map((category) => category.toJSON()),
-    };
+   return result;
 };

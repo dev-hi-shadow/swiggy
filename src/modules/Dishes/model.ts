@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../../configs/mysql"; // your config
 import { IDish } from "./types"; // path to your types
-import { IDIngredient } from "../DIngredients/types";
 
 interface CreationAttributes
   extends Optional<
@@ -43,9 +42,9 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare long_description: string | undefined;
   declare image: string | undefined;
   declare banner_image: string | undefined;
-  declare gallery_images: string[] | undefined;
+  declare gallery_images: string[] | string | undefined;
   declare video_url: string | undefined;
-  declare tags: string[] | undefined;
+  declare tags: string[] | undefined | string;
   declare price: number;
   declare original_price: number | undefined;
   declare currency: string;
@@ -76,10 +75,10 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare discount_applies_with_coupon: boolean | undefined;
   declare promo_code_applicable: boolean | undefined;
   declare is_available: boolean;
-  declare availability_days: string[] | undefined;
+  declare availability_days: string[] | string | undefined;
   declare availability_start_time: string | undefined;
   declare availability_end_time: string | undefined;
-  declare blackout_dates: string[] | undefined;
+  declare blackout_dates: string[] | string | undefined;
   declare preorder_available: boolean | undefined;
   declare preorder_hours: number | undefined;
   declare delivery_eta_minutes: number | undefined;
@@ -92,16 +91,14 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare is_veg: boolean;
   declare is_customizable: boolean;
   declare spicy_level: "mild" | "medium" | "hot" | undefined;
-  declare dietary_tags: string[] | undefined;
-  declare allergen_info: string[] | undefined;
-  declare allergens: string[] | undefined;
+  declare dietary_tags: string[] | string | undefined;
+  declare allergen_info: object;
+  declare allergens: string[] | string | undefined;
   declare ingredients: string | undefined;
   declare addons_group_ids: number[] | undefined;
   declare variant_group_ids: number[] | undefined;
   declare combo_group_id: number | undefined;
-  declare meal_time_tags:
-    | ("breakfast" | "lunch" | "dinner" | "snack")[]
-    | undefined;
+  declare meal_time_tags: string | string[] | undefined;
   declare featured: boolean;
   declare is_featured: boolean;
   declare is_new: boolean;
@@ -113,14 +110,14 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare is_available_for_pickup: boolean;
   declare is_available_for_dine_in: boolean;
   declare is_available_for_takeaway: boolean;
-  declare language_tags: string[] | undefined;
-  declare regional_exclusivity: string[] | undefined;
-  declare cuisine_type: string[] | undefined;
+  declare language_tags: string[] | undefined | string;
+  declare regional_exclusivity: string[] | undefined | string;
+  declare cuisine_type: string[] | undefined | string;
   declare name_translations: Record<string, string> | undefined;
   declare description_translations: Record<string, string> | undefined;
   declare seo_title: string | undefined;
   declare seo_description: string | undefined;
-  declare promo_tags: string[] | undefined;
+  declare promo_tags: string[] | undefined | string;
   declare share_url: string | undefined;
   declare rating: number | undefined;
   declare total_reviews: number | undefined;
@@ -133,7 +130,7 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare user_likes_count: number | undefined;
   declare order_count: number | undefined;
   declare reorder_probability: number | undefined;
-  declare smart_tags: string[] | undefined;
+  declare smart_tags: string[] | string | undefined;
   declare kitchen_station: string | undefined;
   declare priority_order: number | undefined;
   declare shelf_life_hours: number | undefined;
@@ -143,7 +140,7 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare fssai_info:
     | { license_number: string; label_required: boolean }
     | undefined;
-  declare auto_tags: string[] | undefined;
+  declare auto_tags: string[] | string | undefined;
   declare created_at: Date;
   declare updated_at: Date;
   declare deleted_at: Date | null | undefined;
@@ -152,7 +149,6 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
   declare deleted_by: number | null | undefined;
   declare parent_dish_id: number | undefined;
 
-  
   // associations of sequelize modal
   static associate(models: any) {
     Dish.belongsTo(models?.Category, {
@@ -239,12 +235,36 @@ Dish.init(
     long_description: DataTypes.TEXT,
     image: DataTypes.STRING,
     banner_image: DataTypes.STRING,
-    gallery_images: DataTypes.TEXT,
+    gallery_images: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "gallery_images",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("gallery_images");
+        if (value) return (value as string)?.split(",");
+      },
+    },
     video_url: DataTypes.STRING,
-    tags: DataTypes.TEXT,
+    tags: {
+      type: DataTypes.TEXT,
+      get: function () {
+        const value = this.getDataValue("tags");
+        if (value) return (value as string)?.split(",");
+      },
+      set: function (value) {
+        this.setDataValue(
+          "tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+    },
 
     // Pricing
-    price: { type: DataTypes.FLOAT, allowNull: false },
+    price: { type: DataTypes.FLOAT, allowNull: true },
     original_price: DataTypes.FLOAT,
     currency: { type: DataTypes.STRING, allowNull: false },
     price_unit: DataTypes.ENUM("per_item", "per_kg", "per_litre", "per_person"),
@@ -256,7 +276,7 @@ Dish.init(
     // Discounts
     discount_type: {
       type: DataTypes.ENUM("fixed", "percentage"),
-      allowNull: false,
+      allowNull: true,
     },
     discount_amount: DataTypes.FLOAT,
     discount_amount_upto: DataTypes.FLOAT,
@@ -282,17 +302,31 @@ Dish.init(
     availability_days: {
       type: DataTypes.TEXT,
       set: function (value) {
-        this.setDataValue("availability_days", JSON.stringify(value));
+        this.setDataValue(
+          "availability_days",
+          value ? (value as string[]).join(",") : undefined
+        );
       },
       get: function () {
-        return JSON.stringify(this.getDataValue("availability_days"))?.split(
-          ","
-        );
+        const value = this.getDataValue("availability_days");
+        if (value) return (value as string)?.split(",");
       },
     },
     availability_start_time: DataTypes.STRING,
     availability_end_time: DataTypes.STRING,
-    blackout_dates: DataTypes.TEXT,
+    blackout_dates: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "blackout_dates",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("blackout_dates");
+        if (value) return (value as string)?.split(",");
+      },
+    },
     preorder_available: DataTypes.BOOLEAN,
     preorder_hours: DataTypes.INTEGER,
     delivery_eta_minutes: DataTypes.INTEGER,
@@ -313,14 +347,62 @@ Dish.init(
       defaultValue: false,
     },
     spicy_level: DataTypes.ENUM("mild", "medium", "hot"),
-    dietary_tags: DataTypes.TEXT,
+    dietary_tags: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "dietary_tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("dietary_tags");
+        if (value) return (value as string)?.split(",");
+      },
+    },
     allergen_info: DataTypes.JSON,
-    allergens: DataTypes.TEXT,
-    ingredients: DataTypes.TEXT,
+    allergens: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "allergens",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("allergens");
+        if (value) return (value as string)?.split(",");
+      },
+    },
+    ingredients: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "ingredients",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("ingredients");
+        if (value) return (value as string)?.split(",");
+      },
+    },
 
     // Add-ons & variants
 
-    meal_time_tags: DataTypes.TEXT,
+    meal_time_tags: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "meal_time_tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("meal_time_tags");
+        if (value) return (value as string)?.split(",");
+      },
+    },
 
     // Attributes / visibility
     featured: DataTypes.BOOLEAN,
@@ -340,14 +422,38 @@ Dish.init(
     // Regional / localization
     language_tags: DataTypes.JSON,
     regional_exclusivity: DataTypes.JSON,
-    cuisine_type: DataTypes.TEXT,
+    cuisine_type: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "cuisine_type",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("cuisine_type");
+        if (value) return (value as string)?.split(",");
+      },
+    },
     name_translations: DataTypes.JSON,
     description_translations: DataTypes.JSON,
 
     // SEO & marketing
     seo_title: DataTypes.STRING,
     seo_description: DataTypes.STRING,
-    promo_tags: DataTypes.TEXT,
+    promo_tags: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "promo_tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("promo_tags");
+        if (value) return (value as string)?.split(",");
+      },
+    },
     share_url: DataTypes.STRING,
 
     // Ratings & analytics
@@ -362,7 +468,19 @@ Dish.init(
     user_likes_count: DataTypes.INTEGER,
     order_count: DataTypes.INTEGER,
     reorder_probability: DataTypes.FLOAT,
-    smart_tags: DataTypes.TEXT,
+    smart_tags: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "smart_tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("smart_tags");
+        if (value) return (value as string)?.split(",");
+      },
+    },
 
     // Kitchen / operations
     kitchen_station: DataTypes.STRING,
@@ -380,7 +498,19 @@ Dish.init(
     fssai_info: DataTypes.JSON,
 
     // AI / ML
-    auto_tags: DataTypes.TEXT,
+    auto_tags: {
+      type: DataTypes.TEXT,
+      set: function (value) {
+        this.setDataValue(
+          "auto_tags",
+          value ? (value as string[]).join(",") : undefined
+        );
+      },
+      get: function () {
+        const value = this.getDataValue("auto_tags");
+        if (value) return (value as string)?.split(",");
+      },
+    },
 
     // Audit
     created_at: {

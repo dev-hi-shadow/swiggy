@@ -15,20 +15,24 @@ export const CreateOrUpdateCategory = async (
   payload: ICategory,
   transaction: any
 ) => {
-   if (payload?.id) {
-    const data = await Category.update(payload, {
-      where: {
-        id: payload.id,
-      },
-      transaction,
-      returning: true,
-    });
-    if (!data[0]) {
-      throw new ThrowError(404, "Category not found");
+  try {
+    if (payload?.id) {
+      const data = await Category.update(payload, {
+        where: {
+          id: payload.id,
+        },
+        transaction,
+        returning: true,
+      });
+      if (!data[0]) {
+        throw new ThrowError(404, "Category not found");
+      }
+      return await Category.findByPk(payload.id);
+    } else {
+      return await Category.create(payload, { transaction });
     }
-    return await Category.findByPk(payload.id);
-  } else {
-    return await Category.create(payload, { transaction });
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
   }
 };
 

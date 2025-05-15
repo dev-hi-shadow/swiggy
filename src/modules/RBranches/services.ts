@@ -1,7 +1,8 @@
 import { IUser } from "../Users/types";
 import { RBranch, Restaurants, User } from "../../models";
 import { IRBranch } from "./types";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
+import { restaurant } from "../Restaurants/queries";
 
 export const GetRBranches = async (user: IUser, restaurant_id: number) => {
   const include = [
@@ -75,5 +76,23 @@ export const DeleteBranch = async (id: number, user: IUser) => {
     individualHooks: true,
     // @ts-ignore
     deleted_by: user.id,
+  });
+};
+
+
+
+
+export const getRBranchCount = async ({
+  user_id,
+  restaurant_id,
+}: {
+  user_id?: number;
+  restaurant_id?: number;
+}) => {
+  return await RBranch.count({
+    distinct: true,
+    where: {
+      [Op.or]: [{ manager_id: user_id, restaurant_id }],
+    },
   });
 };

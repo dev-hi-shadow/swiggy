@@ -28,6 +28,7 @@ export const subCategoriesList = {
   },
   resolve: Authenticate(
     async (params: any, args: ISubcategory, context: Context) => {
+      console.log("🚀 ~ args:", args)
       try {
         const data = await GetSubCategories(args);
         return formatResponse({

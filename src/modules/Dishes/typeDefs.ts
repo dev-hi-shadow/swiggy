@@ -160,24 +160,22 @@ export const CreateDishInputType = new GraphQLInputObjectType({
 
 export const getDishByCategoriesResponseType = formatResponseType(
   "getDishByCategoriesType",
-  new GraphQLList(
-    new GraphQLObjectType({
-      name: "getDishByCategoriesData",
-      fields: () => ({
-        count: { type: GraphQLInt },
-        rows: {
-          type: new GraphQLList(
-            new GraphQLObjectType({
-              name: "getDishByCategoriesRows",
-              fields: () => ({
-                id: { type: GraphQLInt },
-                name: { type: GraphQLString },
-                dishes: { type: new GraphQLList(DishType) },
-              }),
-            })
-          ),
-        },
-      }),
-    })
-  )
+  new GraphQLObjectType({
+    name: "getDishByCategoriesData",
+    fields: () => ({
+      count: { type: GraphQLInt },
+      rows: {
+        type: new GraphQLList(
+          new GraphQLObjectType({
+            name: "getDishByCategoriesRows",
+            fields: () => ({
+              id: { type: GraphQLInt },
+              name: { type: GraphQLString },
+              dishes: { type: new GraphQLList(DishType) },
+            }),
+          })
+        ),
+      },
+    }),
+  })
 );

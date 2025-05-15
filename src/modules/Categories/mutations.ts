@@ -27,23 +27,26 @@ export const createCategory = {
       "seo_title",
     ],
   }),
-  resolve: async (parent: any, args: ICategory, context: Context) => {
-    const transaction = await sequelize.transaction();
-    try {
-      const { user } = context.req;
-      args = { ...args, created_by: user.id };
-      const data = await CreateOrUpdateCategory(args, transaction);
-      await transaction.commit();
-      return formatResponse({
-        data,
-        message: "Category created successfully",
-        isToast: false,
-      });
-    } catch (error) {
-       await transaction.rollback();
-      throw new ThrowError(500, (error as Error).message);
-    }
-  },
+  resolve: Authenticate(
+    async (parent: any, args: ICategory, context: Context) => {
+      const transaction = await sequelize.transaction();
+      try {
+        const { user } = context.req;
+         args = { ...args, created_by: user.id };
+        const data = await CreateOrUpdateCategory(args, transaction);
+        await transaction.commit();
+        return formatResponse({
+          data,
+          message: "Category created successfully",
+          isToast: false,
+        });
+      } catch (error) {
+         await transaction.rollback();
+        throw new ThrowError(500, (error as Error).message);
+      }
+    },
+    [{ resource: "category", actions: ["write", "read"] }]
+  ),
 };
 
 export const updateCategory = {

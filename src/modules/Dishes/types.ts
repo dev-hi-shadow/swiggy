@@ -14,9 +14,9 @@ export interface IDish {
   long_description?: string;
   image?: string;
   banner_image?: string;
-  gallery_images?: string[];
+  gallery_images?: string[] | string;
   video_url?: string;
-  tags?: string[];
+  tags?: string[] | string;
   price: number;
   original_price?: number;
   currency: string;
@@ -45,7 +45,7 @@ export interface IDish {
   availability_days?: string[] | string;
   availability_start_time?: string;
   availability_end_time?: string;
-  blackout_dates?: string[];
+  blackout_dates?: string[] | string;
   preorder_available?: boolean;
   preorder_hours?: number;
   delivery_eta_minutes?: number;
@@ -58,13 +58,13 @@ export interface IDish {
   is_veg: boolean;
   is_customizable: boolean;
   spicy_level?: "mild" | "medium" | "hot";
-  dietary_tags?: string[];
-  allergen_info?: string[];
-  allergens?: string[];
+  dietary_tags?: string[] | string;
+  allergen_info?: object
+  allergens?: string[] | string;
   ingredients?: string;
   ingredients_options?: IDIngredient[];
   customization_groups?: IDCustomization[];
-  meal_time_tags?: ("breakfast" | "lunch" | "dinner" | "snack")[];
+  meal_time_tags?: string | string[];
   featured: boolean;
   is_featured: boolean;
   is_new: boolean;
@@ -76,14 +76,14 @@ export interface IDish {
   is_available_for_pickup: boolean;
   is_available_for_dine_in: boolean;
   is_available_for_takeaway: boolean;
-  language_tags?: string[];
-  regional_exclusivity?: string[];
-  cuisine_type?: string[];
+  language_tags?: string[] | string;
+  regional_exclusivity?: string[] | string;
+  cuisine_type?: string[] | string;
   name_translations?: Record<string, string>;
   description_translations?: Record<string, string>;
   seo_title?: string;
   seo_description?: string;
-  promo_tags?: string[];
+  promo_tags?: string[] | string;
   share_url?: string;
   rating?: number;
   total_reviews?: number;
@@ -96,7 +96,7 @@ export interface IDish {
   user_likes_count?: number;
   order_count?: number;
   reorder_probability?: number;
-  smart_tags?: string[];
+  smart_tags?: string[] | string;
   kitchen_station?: string;
   priority_order?: number;
   shelf_life_hours?: number;
@@ -107,7 +107,7 @@ export interface IDish {
     license_number: string;
     label_required: boolean;
   };
-  auto_tags?: string[];
+  auto_tags?: string[] | string;
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date | null;

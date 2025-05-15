@@ -78,3 +78,14 @@ export const CreateOrUpdateRestaurant = async (
     return await Restaurants.create(payload, { transaction, include });
   }
 };
+
+
+
+export const getRestaurantCount = async (user_id: number) => {
+  return await Restaurants.count({
+    distinct: true,
+    where: {
+      [Op.or]: [{ owner_id: user_id }],
+    },
+  });
+};

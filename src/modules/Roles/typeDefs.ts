@@ -6,6 +6,7 @@ import {
   GraphQLString,
 } from "graphql";
  import { formatResponseType, GraphQLDate } from "../../utils/typeDefs";
+import { GraphQLJSONObject } from "graphql-type-json";
 
 export const RoleType = new GraphQLObjectType({
   name: "Role",
@@ -16,7 +17,7 @@ export const RoleType = new GraphQLObjectType({
     updated_at: { type: GraphQLDate },
     is_admin: { type: GraphQLBoolean },
     name: { type: GraphQLString },
-    permissions: { type: GraphQLString },
+    permissions: { type: GraphQLJSONObject },
   }),
 });
 export const RolesResponse = formatResponseType(

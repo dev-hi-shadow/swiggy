@@ -18,7 +18,7 @@ export class Role extends Model<IRole, CreationAttributes> implements IRole {
   declare id: number;
   declare name: string;
   declare description?: string | null;
-  declare permissions: string;
+  declare permissions: object | string;
   declare is_active: boolean;
   declare created_at: Date;
   declare updated_at: Date;
@@ -38,7 +38,21 @@ Role.init(
     },
     name: { type: DataTypes.STRING, allowNull: false, unique: true },
     description: { type: DataTypes.STRING(500), allowNull: true },
-    permissions: { type: DataTypes.TEXT, allowNull: true, defaultValue: {} },
+    permissions: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: '{}',
+      set(value: object) {
+        this.setDataValue("permissions", JSON.stringify(value));
+      },
+      get() {
+        const value = this.getDataValue("permissions");
+        if (typeof value === "string") {
+          return value ? JSON.parse(value) : {};
+        }
+        return value || {};
+      },
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

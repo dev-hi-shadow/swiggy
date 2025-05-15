@@ -5,7 +5,7 @@ import { IDish } from "./types";
 import { Context, IPagination } from "../../types";
 import { Authenticate } from "../../middlewares/Authenticate";
 import { getDishes, GetDishesByCategory } from "./services";
-import { getArguments, getDefaultArgs } from "../../utils";
+import { formatResponse, getArguments, getDefaultArgs } from "../../utils";
 
 export const dishList = {
   type: formatResponseType(
@@ -41,11 +41,11 @@ export const getDishById = {
   }),
   resolve: Authenticate(
     async (parent: any, args: IDish, context: Context) => {
-      const data = await getDishes();
-      return {
+      const data = await getDishes(args?.id);
+      return formatResponse({
         message: "Dishes fetched successfully",
         data,
-      };
+      });
     },
     [{ resource: "dishes", actions: ["read"] }]
   ),
@@ -62,11 +62,11 @@ export const getDishByCategories = {
   resolve: Authenticate(
     async (parent: any, args: IPagination<IDish>, context: Context) => {
       const data = await GetDishesByCategory(args);
-      console.log("🚀 ~ data:", data);
-      return {
+
+      return formatResponse({
         message: "Dishes fetched successfully",
         data,
-      };
+      });
     },
     [{ resource: "dishes", actions: ["read"] }]
   ),

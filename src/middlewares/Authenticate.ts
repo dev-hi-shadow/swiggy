@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import _ from "lodash";
 import { Context } from "../types";
 import { IUser } from "../modules/Users/types";
-import { IRole } from "../modules/Roles/types";
 import { getUsers } from "../modules/Users/services";
 
 type Action = "read" | "write" | "delete" | "update";
@@ -57,7 +56,7 @@ export function Authenticate<TSource = any, TArgs = any>(
 
       context.req.user = { ...user, role: user.role };
 
-      const rolePermissions = JSON.parse(user.role.permissions ?? "{}");
+      const rolePermissions = user.role.permissions ?? {};
 
       const hasAllPermissions = _.every(options, ({ resource, actions }) => {
         const allowedActions = _.get(rolePermissions, resource, []) as Action[];
