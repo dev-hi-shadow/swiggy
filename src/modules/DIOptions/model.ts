@@ -8,61 +8,58 @@ export class DIOption
   implements IDIOption
 {
   declare id: number;
-  declare name: string;
+  declare title: string;
   declare price: number;
-  declare ingredient_id: number;
-  declare description?: string;
-  declare image_url?: string;
-  declare created_at: Date;
-  declare updated_at: Date;
+  declare is_default: boolean;
+  declare is_available: boolean;
+  declare customization_id: number;
+  declare order: number;
+  declare calories: number;
+
   static associate(models: any) {
-    //
+    DIOption.belongsTo(models.DCustomization, {
+      as: "option",
+      foreignKey: "customization_id",
+    });
   }
 }
 
 DIOption.init(
   {
     id: {
-      allowNull: false,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
     },
-    name: {
+    customization_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "d_customizations", key: "id" },
+      onDelete: "CASCADE",
+    },
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     price: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      defaultValue: 0,
     },
-    ingredient_id: {
+    is_default: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    is_available: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    calories: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    order: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "d_ingredients",
-        key: "id",
-      },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    image_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    created_at: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updated_at: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      defaultValue: 0,
     },
   },
   {

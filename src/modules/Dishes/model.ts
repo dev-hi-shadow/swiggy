@@ -155,10 +155,13 @@ export class Dish extends Model<IDish, CreationAttributes> implements IDish {
       as: "category",
       foreignKey: "category_id",
     });
+    Dish.hasMany(models?.DCustomization, {
+      as: "customization_groups",
+      foreignKey: "dish_id",
+    });
   }
 
-  // Example of a method to calculate the discounted price
-  calculateDiscountedPrice(): number {
+   calculateDiscountedPrice(): number {
     if (this.discount_type === "percentage" && this.discount_percentage) {
       let discountedPrice = (this.price * this.discount_percentage) / 100;
       if (discountedPrice > this.price) {

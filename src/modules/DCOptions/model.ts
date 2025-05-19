@@ -66,8 +66,8 @@ DCOption.init(
     sequelize,
     tableName: "dc_options",
     freezeTableName: true,
-    timestamps: true,
-    paranoid: true,
+    timestamps: false,
+    paranoid: false,
     hooks: {
       beforeDestroy: async (instance: any, options: any) => {
         const { deleted_by, transaction } = options;

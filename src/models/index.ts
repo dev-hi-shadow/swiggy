@@ -6,6 +6,8 @@ import { RBranch } from "../modules/RBranches/model";
 import { Category } from "../modules/Categories/model";
 import { SubCategory } from "../modules/Sub-categories/model";
 import { Deals } from "../modules/Deals/model";
+import { DCOption } from "../modules/DCOptions/model";
+import { DCustomization } from "../modules/DCustomizations/model";
  
 import { Dish } from "../modules/Dishes/model";
 
@@ -18,11 +20,24 @@ const db = {
   Category,
   SubCategory,
   Deals,
-  Dish
+  Dish,
+DCOption,
+DCustomization
 };
 
 _.forEach(Object.values(db), (model: any) => {
   if (model.associate) model.associate(db);
 });
 
-export { User, Role, Restaurants, RBranch, Category, SubCategory, Deals, Dish };
+export {
+  User,
+  Role,
+  Restaurants,
+  RBranch,
+  Category,
+  SubCategory,
+  Deals,
+  Dish,
+  DCOption,
+  DCustomization,
+};

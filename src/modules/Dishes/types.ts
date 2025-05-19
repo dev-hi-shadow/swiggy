@@ -1,5 +1,5 @@
 import { IDIngredient } from "../DIngredients/types";
-import { IDCustomization } from "../IDCustomizations/types";
+import { IDCustomization } from "../DCustomizations/types";
 
 export interface IDish {
   id: number;

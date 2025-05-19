@@ -1,10 +1,11 @@
 export interface IDIOption {
   id: number;
-  name: string;
+  title: string;
   price: number;
-  ingredient_id: number;
-  description?: string;
-  image_url?: string;
-  created_at: Date;
-  updated_at: Date;
+  is_default: boolean;
+  is_available: boolean;
+  customization_id: number;
+  order: number;
+  calories: number;
+    
 }

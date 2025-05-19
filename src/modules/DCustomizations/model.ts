@@ -20,7 +20,15 @@ export class DCustomization
   declare deletedAt?: Date | null;
 
   static associate(models: any) {
-    //
+    DCustomization.belongsTo(models?.Dish, {
+      as: "dish",
+      foreignKey: "dish_id",
+    });
+    DCustomization.hasMany(models?.DCOption, {
+      as: "options",
+      foreignKey: "customization_id",
+      
+    });
   }
 }
 
@@ -59,15 +67,15 @@ DCustomization.init(
     },
     order: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
+      allowNull: false,
     },
   },
   {
     sequelize,
     tableName: "d_customizations",
     freezeTableName: true,
-    timestamps: true,
-    paranoid: true,
+    timestamps: false,
+    paranoid: false,
     hooks: {
       beforeDestroy: async (instance: any, options: any) => {
         const { deleted_by, transaction } = options;

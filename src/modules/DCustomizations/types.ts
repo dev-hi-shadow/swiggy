@@ -1,4 +1,4 @@
-import { IDCOption } from "../IDCOptions/types";
+import { IDCOption } from "../DCOptions/types";
 
 export interface IDCustomization {
   id: number;
@@ -9,9 +9,6 @@ export interface IDCustomization {
   max_selection: number;
   selection_type: "single" | "multiple";
   order: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
 
   // Optional: Include associated options if needed
   options?: IDCOption[];

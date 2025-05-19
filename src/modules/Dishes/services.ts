@@ -1,5 +1,5 @@
 import { Op, Transaction } from "sequelize";
-import { Dish, Category } from "../../models";
+import { Dish, Category, DCustomization, DCOption } from "../../models";
 import { IUser } from "../Users/types";
 import { IPagination } from "../../types";
 import { IDish } from "./types";
@@ -33,15 +33,30 @@ export const CreateOrUpdateDish = async (
 
 export const getDishes = async (id?: number, user?: IUser) => {
   let data;
-
+  const include = [
+    {
+      model: DCustomization,
+      as: "customization_groups",
+      required: false,
+      include: [
+        {
+          model: DCOption,
+          as: "options",
+        },
+      ],
+    },
+  ];
   if (id) {
-    data = await Dish.findByPk(id, {});
+    data = await Dish.findByPk(id, {
+      include,
+    });
   } else {
     data = await Dish.findAndCountAll({
       where: {},
+      include
     });
   }
-  return data;
+   return data;
 };
 
 export const GetDishesByCategory = async (payload: IPagination<IDish>) => {

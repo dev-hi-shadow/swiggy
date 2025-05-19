@@ -7,7 +7,5 @@ export interface IDCOption {
   is_available: boolean;
   calories?: number | null;
   order: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+ 
 }

@@ -1,17 +1,19 @@
-import { GraphQLInputObjectType, GraphQLInt, GraphQLString } from "graphql";
-import { GraphQLDate } from "../../utils/typeDefs";
-
+import { GraphQLInputObjectType, GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql";
+ 
 const commonFields = {
   id: { type: GraphQLInt },
   customization_id: { type: GraphQLInt },
   title: { type: GraphQLString },
   price: { type: GraphQLInt },
   order: { type: GraphQLInt },
-  createdAt: { type: GraphQLDate },
-  updatedAt: { type: GraphQLDate },
-  deletedAt: { type: GraphQLDate },
 };
 
+export const IDCOptionType = new GraphQLObjectType({
+  name: "IDCOption",
+  fields: () => ({
+    ...commonFields,
+  }),
+});
 export const IDCOptionInputType = new GraphQLInputObjectType({
   name: "IDCOptionInput",
   fields: () => commonFields,

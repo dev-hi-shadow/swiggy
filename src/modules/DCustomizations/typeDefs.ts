@@ -3,10 +3,12 @@ import {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType,
   GraphQLString,
 } from "graphql";
  import { GraphQLDate } from "../../utils/typeDefs";
-import { IDCOptionInputType } from "../IDCOptions/typeDefs";
+import { IDCOptionInputType, IDCOptionType } from "../DCOptions/typeDefs";
 
  
 
@@ -17,22 +19,19 @@ const commonFields = {
   is_required: { type: GraphQLBoolean },
   min_selection: { type: GraphQLInt },
   max_selection: { type: GraphQLInt },
-  selection_type: {
-    type: new GraphQLEnumType({
-      name: "SelectionType",
-      values: {
-        single: { value: "single" },
-        multiple: { value: "multiple" },
-      },
-    }),
-  },
+  selection_type: { type: GraphQLString },
   order: { type: GraphQLInt },
-  createdAt: { type: GraphQLDate },
-  updatedAt: { type: GraphQLDate },
-  deletedAt: { type: GraphQLDate },
 };
 
-export const DCustomizationType = new GraphQLInputObjectType({
+export const DCustomizationType = new GraphQLObjectType({
+  name: "DCustomization",
+  fields: () => ({
+    ...commonFields,
+    options: { type: new GraphQLList(IDCOptionType) },
+  }),
+});
+
+export const DCustomizationInputType = new GraphQLInputObjectType({
   name: "DCusDCustomization",
   fields: () => ({
     ...commonFields,

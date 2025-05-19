@@ -22,7 +22,7 @@ import {
   DIngredientsType,
 } from "../DIngredients/typeDefs";
 import { RestaurantType } from "../Restaurants/typeDefs";
-import { DCustomizationType } from "../IDCustomizations/typeDefs";
+import { DCustomizationInputType, DCustomizationType } from "../DCustomizations/typeDefs";
 import { UserType } from "../Users/typeDefs";
 
 const commonDishFields = {
@@ -142,6 +142,7 @@ export const DishType = new GraphQLObjectType({
     subcategory: { type: SubCategoryType },
     created_by: { type: UserType },
     ingredients_options: { type: new GraphQLList(DIngredientsType) },
+    customization_groups: { type: new GraphQLList(DCustomizationType) },
   }),
 });
 
@@ -153,7 +154,7 @@ export const CreateDishInputType = new GraphQLInputObjectType({
       type: new GraphQLList(DIngredientInputType),
     },
     customization_groups: {
-      type: new GraphQLList(DCustomizationType),
+      type: new GraphQLList(DCustomizationInputType),
     },
   },
 });
