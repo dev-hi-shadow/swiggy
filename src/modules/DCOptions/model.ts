@@ -10,6 +10,7 @@ export class DCOption
   declare id: number;
   declare customization_id: number;
   declare title: string;
+  declare image: string;
   declare price: number;
   declare is_default: boolean;
   declare is_available: boolean;
@@ -59,6 +60,10 @@ DCOption.init(
     },
     order: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    image: {
+      type: DataTypes.STRING,
       defaultValue: 0,
     },
   },

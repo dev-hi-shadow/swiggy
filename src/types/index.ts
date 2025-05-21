@@ -2,6 +2,7 @@ import { Optional } from "sequelize";
 import { IUser } from "../modules/Users/types";
 import { Request } from "express";
 import { IRole } from "../modules/Roles/types";
+import type * as Multer from "multer";
 
 declare module "sequelize" {
   interface InstanceDestroyOptions {
@@ -30,9 +31,16 @@ export interface ResponseOptions<T = any> {
   isToast?: boolean;
 }
 
-declare module "express" {
-  interface Request {
-    user: Partial<IUser>;
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: Partial<IUser>;
+      file?: Express.Multer.File;
+      files?:
+        | Express.Multer.File[]
+        | { [fieldname: string]: Express.Multer.File[] };
+    }
   }
 }
 

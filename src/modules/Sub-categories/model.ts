@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../../configs/mysql"; // your config
 import { ISubcategory } from "./types"; // path to your types
+import _ from "lodash";
 
 interface CreationAttributes
   extends Optional<
@@ -77,7 +78,7 @@ SubCategory.init(
     },
     short_description: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true,  
     },
     long_description: {
       type: DataTypes.TEXT,
@@ -86,6 +87,11 @@ SubCategory.init(
     image: {
       type: DataTypes.STRING,
       allowNull: true,
+      get(){
+        return _.isArray(this.getDataValue("image"))
+          ? this.getDataValue("image")
+          : _.castArray(this.getDataValue("image"));
+      }
     },
     banner_image: {
       type: DataTypes.STRING,

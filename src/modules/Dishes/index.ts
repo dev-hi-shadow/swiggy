@@ -1,7 +1,17 @@
-import { createDish, updateDish } from "./mutations";
-import { dishList, getDishByCategories, getDishById } from "./queries";
+import { Router } from "express";
+import {
+  deleteDish,
+  createDish,
+  getDishById,
+  List,
+  updateDish,
+} from "./controller";
+const router = Router();
 
-export default {
-  Query: { dishList, getDishById, getDishByCategories },
-  Mutation: { createDish, updateDish },
-};
+router.route("/").get(List);
+router.route("/:id").get(getDishById);
+router.route("/:id").post(createDish);
+router.route("/:id").put(updateDish);
+router.route("/").delete(deleteDish);
+
+export default router;

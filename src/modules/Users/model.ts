@@ -1,6 +1,7 @@
 import { DataTypes, DestroyOptions, Model, Optional } from "sequelize";
 import sequelize from "../../configs/mysql";
 import { IUser } from "./types";
+import bcrypt from "bcrypt";
 
 interface CreationAttrs
   extends Optional<
@@ -57,6 +58,11 @@ export class User extends Model<IUser, CreationAttrs> implements IUser {
     delete values.password;
     return values;
   }
+
+  public async comparePassword(password: string): Promise<boolean> {
+    return await bcrypt.compare(password, this.password);
+  }
+
   static associate(models: any) {
     User.belongsTo(models.Role, {
       foreignKey: "role_id",

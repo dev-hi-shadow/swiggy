@@ -19,6 +19,10 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    image: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     price: {
       type: Sequelize.FLOAT,
       defaultValue: 0,

@@ -19,7 +19,19 @@ export const GraphQLDate = new GraphQLScalarType({
   },
 });
 
-
+export const GraphQLUpload = new GraphQLScalarType({
+  name: "Upload",
+  description: "A file upload scalar",
+  parseValue(value) {
+    return value; // Return the file stream
+  },
+  parseLiteral() {
+    throw new Error("Upload scalar literal not supported");
+  },
+  serialize() {
+    throw new Error("Upload scalar serialization not supported");
+  },
+});
  
 
 export const GraphQLTime = new GraphQLScalarType({

@@ -1,143 +1,44 @@
-import {
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInputType,
-  GraphQLInt,
-  GraphQLInterfaceType,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLOutputType,
-  GraphQLString,
-  GraphQLUnionType,
-} from "graphql";
-import { GraphQLJSONObject } from "graphql-type-json";
-import _, { filter } from "lodash";
-
-interface FormattedResponse {
-  status: number;
-  success: boolean;
-  isToast: boolean;
-  message: string;
-  data: any;
-  [key: string]: any;
-}
-
-export const formatResponse = (params: {
-  message: string;
-  data?: any;
-  status?: number;
-  isToast?: boolean;
-  [key: string]: any;
-}): FormattedResponse => {
-  return {
-    ...params,
-    status: params.status ?? 200,
-    success: true,
-    isToast: params.isToast ?? true,
-    message: params.message,
-    data: params.data ?? null,
-  };
+import { Response } from "express";
+import jwt from "jsonwebtoken";
+export const generateToken = (payload: any) => {
+  return jwt.sign(payload, process.env.JWT_SECRET as string);
 };
 
-interface Argument {
-  type: GraphQLInputType;
-}
-
-interface GetArgumentsConfig<T> {
-  outputType: GraphQLObjectType | GraphQLInputObjectType;
-  exclude?: (keyof T)[];
-  includes?: (keyof T)[];
-  nullables?: (keyof T | "all")[];
-  typeOverrides?: Record<string, { type: GraphQLInputType }>;
-}
-
-interface Argument {
-  type: GraphQLInputType;
-}
-export const getDefaultArgs = {
-  limit: { type: GraphQLInt },
-  page: { type: GraphQLInt },
-  search: { type: GraphQLString },
-  sortBy: { type: GraphQLString },
-  sortOrder: { type: GraphQLString },
-  filter: { type: GraphQLJSONObject },
-};
-export const getArguments = <T>(
-  config: GetArgumentsConfig<T>
-): { [key: string]: Argument } => {
+export const formatResponse = (
+  res: Response,
+  ResponseData: {
+    message: string;
+    data: any;
+    statusCode?: number;
+    isError?: boolean;
+    isToast?: boolean;
+    isNextPage?: boolean;
+    limit?: number;
+    page?: number;
+    totalCount?: number;
+  }
+) => {
   const {
-    outputType,
-    exclude = [],
-    includes = [],
-    nullables = [],
-    typeOverrides = {},
-  } = config;
-
-  const outputFields = outputType.getFields();
-  const args: { [key: string]: Argument } = {};
-
-  Object.entries(outputFields).forEach(([fieldName, field]) => {
-    if (
-      (_.size(
-        exclude.concat([
-          "created_at",
-          "updated_at",
-          "deleted_at",
-          "created_by",
-          "updated_by",
-          "deleted_by",
-        ] as unknown as keyof T)
-      ) > 0 &&
-        exclude.includes(fieldName as keyof T)) ||
-      (_.size(includes) > 0 && !includes.includes(fieldName as keyof T))
-    ) {
-      return;
-    }
-
-    if (
-      (typeOverrides as Record<string, { type: GraphQLInputType }>)[fieldName]
-    ) {
-      args[fieldName] = typeOverrides[fieldName];
-      return;
-    }
-
-    let baseType: GraphQLOutputType | GraphQLInputType = (field as any).type;
-    let isNonNull = false;
-
-    if (baseType instanceof GraphQLNonNull) {
-      isNonNull = true;
-      baseType = baseType.ofType;
-    }
-
-    let isList = false;
-    if (baseType instanceof GraphQLList) {
-      isList = true;
-      baseType = baseType.ofType;
-    }
-
-    if (
-      outputType instanceof GraphQLObjectType &&
-      (baseType instanceof GraphQLObjectType ||
-        baseType instanceof GraphQLInterfaceType ||
-        baseType instanceof GraphQLUnionType)
-    ) {
-      baseType = GraphQLID;
-    }
-
-    let finalType: GraphQLInputType = baseType as GraphQLInputType;
-    if (isList) {
-      finalType = new GraphQLList(finalType);
-    }
-    if (
-      isNonNull &&
-      !nullables.includes((fieldName as keyof T) || ("all" as keyof T))
-    ) {
-      finalType = new GraphQLNonNull(finalType);
-    }
-
-    args[fieldName] = { type: finalType };
+    data,
+    message,
+    isError,
+    isNextPage,
+    isToast,
+    limit,
+    page,
+    totalCount,
+    statusCode,
+  } = ResponseData;
+  return res.status(statusCode || 200).json({
+    ...(message ? { message } : {}),
+    data: {
+      ...(data ? { data } : {}),
+      ...(isNextPage ? { isNextPage } : {}),
+      ...(limit ? { limit } : {}),
+      ...(page ? { page } : {}),
+      ...(totalCount ? { totalCount } : {}),
+    },
+    ...(isError ? { isError } : {}),
+    ...(isToast ? { isToast } : {}),
   });
-
-  return args;
 };

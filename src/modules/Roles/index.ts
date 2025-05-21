@@ -1,10 +1,10 @@
-import { roleList, getRoleById } from "./queries";
-import { createRole, updateRole, deleteRole } from "./mutations";
-export default {
-  Query: { roleList, getRoleById },
-  Mutation: {
-    createRole,
-    updateRole,
-    deleteRole,
-  },
-};
+import { Router } from "express";
+import { deleteRole, getRoleById, List, updateRole } from "./controller";
+const router = Router();
+
+router.route("/").get(List);
+router.route("/:id").get(getRoleById);
+router.route("/:id").put(updateRole);
+router.route("/").post(deleteRole);
+
+export default router;
